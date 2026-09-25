@@ -78,7 +78,7 @@ export const ClientDashboard: React.FC = () => {
 
         <Card>
           <CardBody className="flex items-center gap-4">
-            <div className="p-3 bg-orange-50 text-primary rounded-xl border border-orange-100">
+            <div className="p-3 bg-blue-50 text-primary rounded-xl border border-blue-100">
               <HiOutlineWrenchScrewdriver className="h-6 w-6" />
             </div>
             <div>
@@ -166,7 +166,7 @@ export const ClientDashboard: React.FC = () => {
             <p className="text-[11px] text-brand-dark-grey leading-relaxed">
               Need to add another excavator, concrete mixer, pump, or road roller to your job site immediately?
             </p>
-            <div className="bg-orange-50 border border-orange-100 rounded-xl p-3 text-[10px] text-brand-text font-medium leading-relaxed">
+            <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-[10px] text-brand-text font-medium leading-relaxed">
               <span className="font-bold text-primary block mb-0.5">Account Dispatch Yard:</span>
               Your pre-approved site location is registered. Standard tax rates apply automatically at checkout.
             </div>

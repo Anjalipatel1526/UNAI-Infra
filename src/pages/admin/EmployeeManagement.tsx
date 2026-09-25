@@ -54,11 +54,11 @@ export const EmployeeManagement: React.FC = () => {
       const parts = formName.toLowerCase().split(' ');
       const username = parts.length >= 2 ? `${parts[0]}.${parts[1][0]}` : parts[0];
       setFormUsername(username.replace(/[^a-z0-9.]/g, ''));
-      setFormEmail(`${username.replace(/[^a-z0-9.]/g, '')}@nhhomes.in`);
+      setFormEmail(`${username.replace(/[^a-z0-9.]/g, '')}@unaiinfra.in`);
       
       // Auto-generate standard starting password
       const randNum = Math.floor(100 + Math.random() * 900);
-      setFormPassword(`NHHome@${randNum}`);
+      setFormPassword(`UNAI@${randNum}`);
     }
   }, [formName, isAddModalOpen]);
 
@@ -325,7 +325,7 @@ export const EmployeeManagement: React.FC = () => {
             <Select label="Department *" options={departments.map(d => ({ label: d, value: d }))} value={formDept} onChange={e => setFormDept(e.target.value)} />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-orange-50/50 p-4 border border-orange-100 rounded-xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-blue-50/50 p-4 border border-blue-100 rounded-xl">
             <div className="space-y-4">
               <span className="font-bold text-[10px] uppercase text-primary tracking-wider flex items-center gap-1"><HiOutlineKey /> Generated Credentials</span>
               <Input label="Username (Auto Generated) *" required value={formUsername} onChange={e => setFormUsername(e.target.value)} />

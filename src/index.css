@@ -2,10 +2,12 @@
 
 @theme {
   --font-sans: sans-serif;
-  --color-primary: #F58220;
-  --color-primary-hover: #FFA64D;
-  --color-brand-orange: #F58220;
-  --color-brand-orange-light: #FFA64D;
+  --color-primary: #2f37d6;
+  --color-primary-hover: #454de2;
+  --color-brand-blue: #2f37d6;
+  --color-brand-blue-light: #454de2;
+  --color-brand-orange: #2f37d6;
+  --color-brand-orange-light: #454de2;
   --color-brand-bg: #FFFFFF;
   --color-brand-light-grey: #F7F7F7;
   --color-brand-border: #E5E5E5;

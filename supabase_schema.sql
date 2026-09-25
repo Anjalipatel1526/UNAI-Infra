@@ -1,5 +1,5 @@
 -- ============================================================
--- NH HOMES CIVIL EQUIPMENT RENTAL - SUPABASE SQL SCHEMA (RLS ENABLED)
+-- UNAI INFRA CIVIL EQUIPMENT RENTAL - SUPABASE SQL SCHEMA (RLS ENABLED)
 -- Run this in your Supabase SQL Editor (Dashboard > SQL Editor)
 -- ============================================================
 
@@ -571,5 +571,5 @@ CREATE POLICY "system_settings_delete_all" ON system_settings FOR DELETE TO anon
 -- ============================================================
 
 INSERT INTO system_settings (id, company_name, company_address, company_email, company_phone, gstin, invoice_prefix, currency, tax_rate, backup_interval)
-VALUES (1, 'NH Homes Civil Equipment Rental', 'Panvel, Navi Mumbai, Maharashtra', 'contact@nhhomes.in', '+91 98765 43210', '', 'INV', 'INR', 18.00, 'daily')
+VALUES (1, 'UNAI Infra Civil Equipment Rental', 'Panvel, Navi Mumbai, Maharashtra', 'contact@unaiinfra.in', '+91 98765 43210', '', 'INV', 'INR', 18.00, 'daily')
 ON CONFLICT (id) DO NOTHING;

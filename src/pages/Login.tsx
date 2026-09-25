@@ -146,35 +146,35 @@ export const Login: React.FC = () => {
     <>
       <div className="min-h-screen flex flex-col md:flex-row relative overflow-hidden font-sans"
         style={{
-          background: 'linear-gradient(135deg, #F58220 0%, #e06c10 25%, #c45a0a 50%, #F58220 75%, #FFA64D 100%)',
+          background: 'linear-gradient(135deg, #2f37d6 0%, #262db8 25%, #1d2396 50%, #2f37d6 75%, #4f57ea 100%)',
         }}
       >
         {/* Decorative background circles — only visible on mobile (hidden on desktop) */}
         <div className="absolute top-[-80px] left-[-60px] w-64 h-64 rounded-full opacity-30 pointer-events-none md:hidden"
-          style={{ background: 'radial-gradient(circle, #FFA64D, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, #4f57ea, transparent 70%)' }}
         />
         <div className="absolute bottom-[-100px] right-[-80px] w-80 h-80 rounded-full opacity-25 pointer-events-none md:hidden"
           style={{ background: 'radial-gradient(circle, #fff, transparent 70%)' }}
         />
         <div className="absolute top-1/3 right-[-40px] w-48 h-48 rounded-full opacity-20 pointer-events-none md:hidden"
-          style={{ background: 'radial-gradient(circle, #FFA64D, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, #4f57ea, transparent 70%)' }}
         />
 
         {/* Left Panel — Only on desktop (md and up) */}
         <div className="hidden md:flex md:w-1/2 relative overflow-hidden flex-col justify-between"
           style={{
-            background: 'linear-gradient(160deg, #F58220 0%, #e06c10 40%, #c45a0a 70%, #a04808 100%)',
+            background: 'linear-gradient(160deg, #2f37d6 0%, #252cbd 40%, #1c2294 70%, #151a75 100%)',
           }}
         >
           {/* Decorative elements for desktop left panel */}
           <div className="absolute top-[-120px] left-[-100px] w-96 h-96 rounded-full opacity-20"
-            style={{ background: 'radial-gradient(circle, #FFA64D, transparent 70%)' }}
+            style={{ background: 'radial-gradient(circle, #4f57ea, transparent 70%)' }}
           />
           <div className="absolute bottom-[-80px] right-[-60px] w-72 h-72 rounded-full opacity-15"
             style={{ background: 'radial-gradient(circle, #fff, transparent 70%)' }}
           />
           <div className="absolute top-1/2 left-1/3 w-56 h-56 rounded-full opacity-10"
-            style={{ background: 'radial-gradient(circle, #FFA64D, transparent 70%)' }}
+            style={{ background: 'radial-gradient(circle, #4f57ea, transparent 70%)' }}
           />
           {/* Subtle grid pattern */}
           <div className="absolute inset-0 opacity-[0.04]"
@@ -191,8 +191,8 @@ export const Login: React.FC = () => {
                 <Sparkles className="h-5 w-5 text-white" />
               </div>
               <div>
-                <span className="font-extrabold text-lg text-white tracking-wider block leading-none">NH HOMES</span>
-                <span className="text-[10px] font-bold text-orange-200 tracking-widest uppercase leading-none">
+                <span className="font-extrabold text-lg text-white tracking-wider block leading-none">UNAI INFRA</span>
+                <span className="text-[10px] font-bold text-blue-200 tracking-widest uppercase leading-none">
                   Civil Equipment Rental
                 </span>
               </div>
@@ -204,16 +204,16 @@ export const Login: React.FC = () => {
             <h2 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-5 tracking-tight">
               Hey, Hello!
             </h2>
-            <p className="text-sm lg:text-base text-orange-100 leading-relaxed max-w-md font-medium">
+            <p className="text-sm lg:text-base text-blue-100 leading-relaxed max-w-md font-medium">
               We provide all the advantages that can simplify all your equipment rental management and financial transactions without any further requirements.
             </p>
           </div>
 
           {/* Bottom: Footer */}
           <div className="relative z-10 p-10 lg:p-14">
-            <div className="flex items-center gap-4 text-xs text-orange-200/60 font-medium">
-              <span>© 2026 NH Homes Ltd.</span>
-              <span className="w-1 h-1 rounded-full bg-orange-200/40" />
+            <div className="flex items-center gap-4 text-xs text-blue-200/60 font-medium">
+              <span>© 2026 UNAI Infra Ltd.</span>
+              <span className="w-1 h-1 rounded-full bg-blue-200/40" />
               <span>All rights reserved.</span>
             </div>
           </div>
@@ -226,7 +226,7 @@ export const Login: React.FC = () => {
           <div className="flex flex-col items-center mb-8 select-none md:hidden">
             <h1 className="text-2xl font-extrabold text-white tracking-tight">Login</h1>
             <p className="text-xs text-white/70 font-medium mt-1">
-              NH Homes Portal
+              UNAI Infra Portal
             </p>
           </div>
 
@@ -244,7 +244,7 @@ export const Login: React.FC = () => {
           </div>
 
           {/* Mobile-only Footer */}
-          <p className="text-[10px] text-white/50 mt-8 font-medium md:hidden">© 2026 NH Homes Ltd. All rights reserved.</p>
+          <p className="text-[10px] text-white/50 mt-8 font-medium md:hidden">© 2026 UNAI Infra Ltd. All rights reserved.</p>
 
         </div>
       </div>

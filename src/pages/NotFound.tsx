@@ -8,7 +8,7 @@ export const NotFound: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-brand-light-grey flex flex-col items-center justify-center p-6 text-center">
-      <div className="h-16 w-16 bg-orange-50 border border-orange-100 rounded-full flex items-center justify-center text-primary mb-6">
+      <div className="h-16 w-16 bg-blue-50 border border-blue-100 rounded-full flex items-center justify-center text-primary mb-6">
         <HiOutlineMapPin className="h-8 w-8" />
       </div>
       <h1 className="text-4xl font-extrabold text-brand-text mb-2 tracking-tight">Page Not Found</h1>

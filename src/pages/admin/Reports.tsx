@@ -43,7 +43,7 @@ export const Reports: React.FC = () => {
     // Headers
     html += `<tr>`;
     headers.forEach(h => {
-      html += `<th style="background-color: #ffe7d3; font-weight: bold;">${h}</th>`;
+      html += `<th style="background-color: #e0e5ff; color: #2f37d6; font-weight: bold;">${h}</th>`;
     });
     html += `</tr>`;
     
@@ -74,7 +74,7 @@ export const Reports: React.FC = () => {
     
     doc.setFont("Helvetica", "bold");
     doc.setFontSize(16);
-    doc.text("NH Homes Civil Equipment Rental", 14, 20);
+    doc.text("UNAI Infra Civil Equipment Rental", 14, 20);
     
     doc.setFontSize(12);
     doc.setFont("Helvetica", "normal");
@@ -198,7 +198,7 @@ export const Reports: React.FC = () => {
       });
     }
 
-    const filename = `NH_Homes_${reportType}_Report_${Date.now()}`;
+    const filename = `UNAI_Infra_${reportType}_Report_${Date.now()}`;
 
     if (format === 'CSV') {
       downloadCSV(headers, rows, filename);
@@ -242,7 +242,7 @@ export const Reports: React.FC = () => {
             onClick={() => setReportType('revenue')}
             className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-3 ${
               reportType === 'revenue'
-                ? 'bg-orange-50 border-orange-100 text-primary'
+                ? 'bg-blue-50 border-blue-100 text-primary'
                 : 'bg-white border-brand-border text-brand-dark-grey hover:bg-brand-light-grey'
             }`}
           >
@@ -254,7 +254,7 @@ export const Reports: React.FC = () => {
             onClick={() => setReportType('inventory')}
             className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-3 ${
               reportType === 'inventory'
-                ? 'bg-orange-50 border-orange-100 text-primary'
+                ? 'bg-blue-50 border-blue-100 text-primary'
                 : 'bg-white border-brand-border text-brand-dark-grey hover:bg-brand-light-grey'
             }`}
           >
@@ -266,7 +266,7 @@ export const Reports: React.FC = () => {
             onClick={() => setReportType('rentals')}
             className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-3 ${
               reportType === 'rentals'
-                ? 'bg-orange-50 border-orange-100 text-primary'
+                ? 'bg-blue-50 border-blue-100 text-primary'
                 : 'bg-white border-brand-border text-brand-dark-grey hover:bg-brand-light-grey'
             }`}
           >
@@ -278,7 +278,7 @@ export const Reports: React.FC = () => {
             onClick={() => setReportType('clients')}
             className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-3 ${
               reportType === 'clients'
-                ? 'bg-orange-50 border-orange-100 text-primary'
+                ? 'bg-blue-50 border-blue-100 text-primary'
                 : 'bg-white border-brand-border text-brand-dark-grey hover:bg-brand-light-grey'
             }`}
           >
@@ -290,7 +290,7 @@ export const Reports: React.FC = () => {
             onClick={() => setReportType('maintenance')}
             className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-3 ${
               reportType === 'maintenance'
-                ? 'bg-orange-50 border-orange-100 text-primary'
+                ? 'bg-blue-50 border-blue-100 text-primary'
                 : 'bg-white border-brand-border text-brand-dark-grey hover:bg-brand-light-grey'
             }`}
           >

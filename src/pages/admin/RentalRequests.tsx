@@ -166,7 +166,7 @@ export const RentalRequests: React.FC = () => {
   // Email invoice simulation
   const emailInvoice = () => {
     if (!selectedRequest) return;
-    toast.success(`Invoice emailed successfully to ${selectedRequest.clientName} (${selectedRequest.invoiceNumber}@nhhomes.in)`);
+    toast.success(`Invoice emailed successfully to ${selectedRequest.clientName} (${selectedRequest.invoiceNumber}@unaiinfra.in)`);
   };
 
   const getStatusBadge = (status: RentalRequest['status']) => {
@@ -390,7 +390,7 @@ export const RentalRequests: React.FC = () => {
             {/* Renderable Invoice Sheet */}
             <div
               ref={invoiceRef}
-              id="nh-invoice-document"
+              id="unai-invoice-document"
               className="bg-white border border-brand-border rounded-xl p-8 sm:p-12 text-left text-xs max-w-3xl mx-auto shadow-sm"
               style={{ color: '#111827' }}
             >
@@ -398,14 +398,14 @@ export const RentalRequests: React.FC = () => {
               <div className="flex flex-col sm:flex-row justify-between items-start gap-6 border-b border-brand-border pb-6">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-base">NH</div>
-                    <span className="font-extrabold text-sm tracking-wider">NH HOMES Ltd</span>
+                    <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-base">UI</div>
+                    <span className="font-extrabold text-sm tracking-wider">UNAI INFRA Ltd</span>
                   </div>
                   <p className="text-[10px] text-brand-dark-grey leading-relaxed">
                     Plot No. 124, Phase 2, Panvel Industrial Area,<br />
                     Navi Mumbai, Maharashtra - 410206<br />
                     GSTIN: <strong className="font-mono">{settings.gstNumber}</strong><br />
-                    Email: billing@nhhomes.in | Phone: +91 22 2748 9988
+                    Email: billing@unaiinfra.in | Phone: +91 22 2748 9988
                   </p>
                 </div>
                 <div className="text-left sm:text-right">
@@ -521,7 +521,7 @@ export const RentalRequests: React.FC = () => {
               <div className="border-t border-brand-border pt-8 mt-6 flex justify-between items-center text-[10px] text-brand-dark-grey">
                 <div>
                   <p>Authorized Signature: _______________________</p>
-                  <p className="mt-1">NH Homes Accounts Executive</p>
+                  <p className="mt-1">UNAI Infra Accounts Executive</p>
                 </div>
                 <div className="text-right">
                   <p>Receiver Signature: _______________________</p>

@@ -53,9 +53,9 @@ export const MeshGradient = () => (
       opacity: 0.55;
       animation: float 12s infinite ease-in-out;
     }
-    .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #ffe7d3; animation-delay: 0s; } /* Soft NH Orange */
-    .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: #fff1e6; animation-delay: 3s; } /* Pale Cream */
-    .blob-3 { top: 35%; left: 35%; width: 35vw; height: 35vw; background: #ffd9c0; animation-delay: 6s; } /* Mid Orange */
+    .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #e0e5ff; animation-delay: 0s; } /* Soft UNAI Blue */
+    .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: #eff2ff; animation-delay: 3s; } /* Pale Blue */
+    .blob-3 { top: 35%; left: 35%; width: 35vw; height: 35vw; background: #cdd7fc; animation-delay: 6s; } /* Mid Blue */
   `}</style>
 );
 
@@ -211,7 +211,7 @@ export const AdminDashboard: React.FC = () => {
                 
                 {/* Welcome Card Section */}
                 <div className="md:col-span-2">
-                  <FrostCard className="h-full flex flex-col justify-center bg-gradient-to-br from-primary to-amber-500 text-white border-none shadow-lg shadow-primary/20">
+                  <FrostCard className="h-full flex flex-col justify-center bg-gradient-to-br from-primary to-indigo-600 text-white border-none shadow-lg shadow-primary/20">
                     <div className="relative z-10 p-2">
                       <motion.div
                         initial={{ opacity: 0, x: -20 }}
@@ -219,10 +219,10 @@ export const AdminDashboard: React.FC = () => {
                         transition={{ delay: 0.2 }}
                       >
                         <span className="inline-block rounded-full bg-white/20 px-3.5 py-1 text-xs font-semibold backdrop-blur-md mb-4 border border-white/10">
-                          NH Systems Live
+                          UNAI Infra Systems Live
                         </span>
                         <h2 className="text-3xl font-extrabold mb-2 tracking-tight">Welcome, {user?.name.split(' ')[0] || 'Admin'}!</h2>
-                        <p className="text-orange-50 max-w-lg mb-6 text-xs font-medium leading-relaxed">
+                        <p className="text-blue-100 max-w-lg mb-6 text-xs font-medium leading-relaxed">
                           The rental depot operations are stable. You have <span className="font-bold text-white">{availableInvCount} equipment units</span> available in the yards, and <span className="font-bold text-white">{rentedInvCount} units</span> actively deployed on corporate client construction sites.
                         </p>
                         <div className="flex gap-3">
@@ -243,7 +243,7 @@ export const AdminDashboard: React.FC = () => {
                 {/* Quick Stat: Revenue */}
                 <FrostCard delay={0.1} className="flex flex-col justify-between">
                   <div className="flex justify-between items-start">
-                    <div className="p-3 bg-orange-100 rounded-2xl text-primary border border-orange-200/50">
+                    <div className="p-3 bg-blue-50 rounded-2xl text-primary border border-blue-200/50">
                       <Zap className="h-6 w-6" />
                     </div>
                     <div className="relative">
@@ -291,7 +291,7 @@ export const AdminDashboard: React.FC = () => {
                 <FrostCard delay={0.2} className="md:col-span-2 min-h-[350px]">
                   <div className="flex items-center justify-between mb-6">
                     <div>
-                      <h3 className="text-sm font-bold text-stone-800 uppercase tracking-wider">NH Billing Analytics</h3>
+                      <h3 className="text-sm font-bold text-stone-800 uppercase tracking-wider">UNAI Infra Billing Analytics</h3>
                       <p className="text-xs text-stone-400 font-medium mt-0.5">Monthly Revenue Growth vs Active Clients</p>
                     </div>
                     <div className="flex gap-1.5 p-1 bg-stone-100 rounded-xl border border-stone-200/40">
@@ -316,8 +316,8 @@ export const AdminDashboard: React.FC = () => {
                       <AreaChart data={chartData[chartRange]}>
                         <defs>
                           <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#F58220" stopOpacity={0.25} />
-                            <stop offset="95%" stopColor="#F58220" stopOpacity={0} />
+                            <stop offset="5%" stopColor="#2f37d6" stopOpacity={0.25} />
+                            <stop offset="95%" stopColor="#2f37d6" stopOpacity={0} />
                           </linearGradient>
                           <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="5%" stopColor="#ec4899" stopOpacity={0.2} />
@@ -331,7 +331,7 @@ export const AdminDashboard: React.FC = () => {
                           contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '16px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)' }}
                           itemStyle={{ fontSize: '11px', fontWeight: 'bold' }}
                         />
-                        <Area type="monotone" dataKey="revenue" name="Billing (INR)" stroke="#F58220" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+                        <Area type="monotone" dataKey="revenue" name="Billing (INR)" stroke="#2f37d6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
                         <Area type="monotone" dataKey="users" name="Active Customers" stroke="#ec4899" strokeWidth={3} fillOpacity={1} fill="url(#colorUsers)" />
                       </AreaChart>
                     </ResponsiveContainer>
@@ -364,7 +364,7 @@ export const AdminDashboard: React.FC = () => {
                               {req.items.length} units • ₹{req.grandTotal.toLocaleString('en-IN')}
                             </div>
                           </div>
-                          <span className="text-[9px] px-2 py-1 bg-amber-50 rounded-lg font-bold text-primary shrink-0 group-hover:bg-white transition-colors border border-amber-100">
+                          <span className="text-[9px] px-2 py-1 bg-blue-50 rounded-lg font-bold text-primary shrink-0 group-hover:bg-white transition-colors border border-blue-100">
                             Pending
                           </span>
                         </div>
@@ -466,7 +466,7 @@ export const AdminDashboard: React.FC = () => {
                 <FrostCard delay={0.1} className="flex flex-col min-h-[400px]">
                   <div className="flex items-center justify-between mb-6">
                     <div>
-                      <h3 className="text-sm font-bold text-stone-800 uppercase tracking-wider">NH Monthly Acquisitions</h3>
+                      <h3 className="text-sm font-bold text-stone-800 uppercase tracking-wider">UNAI Infra Monthly Acquisitions</h3>
                       <p className="text-xs text-stone-400 font-medium">New Customer Profiles Registered</p>
                     </div>
                     <div className="relative">
@@ -601,7 +601,7 @@ export const AdminDashboard: React.FC = () => {
                     <div className="flex gap-2.5 w-full">
                       <button 
                         onClick={() => navigate('/admin/employees')}
-                        className="flex-1 bg-orange-50 border border-orange-100 text-primary py-2 rounded-xl text-xs font-bold hover:bg-orange-100 transition-colors cursor-pointer"
+                        className="flex-1 bg-blue-50 border border-blue-100 text-primary py-2 rounded-xl text-xs font-bold hover:bg-blue-100 transition-colors cursor-pointer"
                       >
                         Edit Credentials
                       </button>
@@ -640,7 +640,7 @@ export const AdminDashboard: React.FC = () => {
                         className={cn(
                           'p-4 rounded-2xl cursor-pointer transition-all border text-xs',
                           selectedLogId === log.id 
-                            ? 'bg-white shadow-md border-orange-200/70 translate-x-1' 
+                            ? 'bg-white shadow-md border-blue-200/70 translate-x-1' 
                             : 'hover:bg-white/40 border-transparent'
                         )}
                       >
@@ -665,7 +665,7 @@ export const AdminDashboard: React.FC = () => {
                       <div>
                         <div className="flex items-center justify-between border-b border-stone-200/50 pb-6 mb-6">
                           <div className="flex items-center gap-4">
-                            <div className="h-12 w-12 rounded-2xl bg-orange-100 text-primary border border-orange-200/40 flex items-center justify-center font-bold text-lg">
+                            <div className="h-12 w-12 rounded-2xl bg-blue-100 text-primary border border-blue-200/40 flex items-center justify-center font-bold text-lg">
                               {selectedLog.user.charAt(0)}
                             </div>
                             <div>
@@ -701,7 +701,7 @@ export const AdminDashboard: React.FC = () => {
 
                       <div className="mt-8 pt-6 border-t border-stone-200/50 flex justify-between items-center">
                         <span className="text-[10px] text-stone-400 font-bold uppercase tracking-wider">
-                          Logged via NH Homes Portal API
+                          Logged via UNAI Infra Portal API
                         </span>
                         <button 
                           onClick={() => toast.success('Log entry exported to clipboard')}

@@ -223,7 +223,7 @@ export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({ chil
   };
 
   return (
-    <div className="min-h-screen font-sans text-stone-850 selection:bg-orange-100 selection:text-orange-950 relative overflow-hidden flex flex-col bg-stone-50">
+    <div className="min-h-screen font-sans text-stone-850 selection:bg-blue-100 selection:text-blue-950 relative overflow-hidden flex flex-col bg-stone-50">
       <div 
         style={{
           display: 'flex',
@@ -265,11 +265,11 @@ export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({ chil
           <div>
             {/* Logo container */}
             <div className="flex items-center gap-3 px-2 mb-8">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-orange-500 shadow-md shadow-primary/30">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-indigo-600 shadow-md shadow-primary/30">
                 <Sparkles className="h-5 w-5 text-white" />
               </div>
               <div className="text-left">
-                <h1 className="text-xs font-extrabold tracking-wider text-stone-850 m-0 leading-none">NH HOMES</h1>
+                <h1 className="text-xs font-extrabold tracking-wider text-stone-850 m-0 leading-none">UNAI INFRA</h1>
                 <p className="text-[9px] font-bold text-primary uppercase tracking-widest mt-1 leading-none">CIVIL RENTALS</p>
               </div>
             </div>
@@ -293,7 +293,7 @@ export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({ chil
                     <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-white" : "text-stone-500 group-hover:text-black")} />
                     <span className="truncate">{item.name}</span>
                     {item.badgeCount && item.badgeCount > 0 ? (
-                      <span className={cn("ml-auto text-[9px] font-bold px-2 py-0.5 rounded-full border", isActive ? "bg-white/20 border-white/10 text-white" : "bg-orange-50 border-orange-100 text-primary")}>
+                      <span className={cn("ml-auto text-[9px] font-bold px-2 py-0.5 rounded-full border", isActive ? "bg-white/20 border-white/10 text-white" : "bg-blue-50 border-blue-100 text-primary")}>
                         {item.badgeCount}
                       </span>
                     ) : null}
@@ -349,7 +349,7 @@ export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({ chil
               
               <div className="text-left">
                 <span className="text-[10px] font-bold text-stone-400 tracking-wider uppercase">
-                  NH Homes CRM
+                  UNAI Infra CRM
                 </span>
                 <h2 className="text-sm font-extrabold text-stone-850 m-0 leading-tight capitalize">
                   {location.pathname.split('/').slice(-1)[0].replace('-', ' ')} Portal
@@ -523,9 +523,9 @@ export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({ chil
                   className="flex items-center rounded-full bg-white p-1 shadow-sm border border-stone-150 cursor-pointer hover:shadow-md transition-all relative"
                 >
                   {user?.profileImage && !user.profileImage.includes('photo-1507003211169-0a1dd7228f2d') ? (
-                    <img src={user.profileImage} className="h-9 w-9 rounded-full bg-orange-105 object-cover border border-stone-100" />
+                    <img src={user.profileImage} className="h-9 w-9 rounded-full bg-blue-100 object-cover border border-stone-100" />
                   ) : (
-                    <div className="h-9 w-9 rounded-full bg-gradient-to-br from-primary to-orange-500 flex items-center justify-center text-white text-sm font-bold shrink-0">
+                    <div className="h-9 w-9 rounded-full bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
                       {(user?.name || 'A').charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -584,9 +584,9 @@ export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({ chil
             <div>
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-2.5">
-                  <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-lg">NH</div>
+                  <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-lg">UI</div>
                   <div>
-                    <h1 className="text-xs font-extrabold text-stone-850 m-0 leading-none">NH HOMES</h1>
+                    <h1 className="text-xs font-extrabold text-stone-850 m-0 leading-none">UNAI INFRA</h1>
                     <p className="text-[9px] font-semibold text-primary uppercase tracking-widest mt-0.5 leading-none">CIVIL RENTALS</p>
                   </div>
                 </div>
@@ -675,7 +675,7 @@ export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({ chil
         <div className="flex flex-col items-center text-center space-y-4">
           <div className="relative group">
             <Avatar name={user?.name || 'User'} src={user?.profileImage} size="xl" />
-            <label className="absolute bottom-0 right-0 p-2 bg-primary hover:bg-orange-600 text-white rounded-full cursor-pointer shadow-md hover:scale-105 transition-transform flex items-center justify-center border-2 border-white">
+            <label className="absolute bottom-0 right-0 p-2 bg-primary hover:bg-[#252cb0] text-white rounded-full cursor-pointer shadow-md hover:scale-105 transition-transform flex items-center justify-center border-2 border-white">
               <Camera className="h-3.5 w-3.5" />
               <input
                 type="file"

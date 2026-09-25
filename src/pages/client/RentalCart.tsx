@@ -265,7 +265,7 @@ export const RentalCart: React.FC = () => {
                       onChange={e => setReturnDate(e.target.value)}
                     />
 
-                    <div className="bg-orange-50 border border-orange-100 rounded-xl p-3 flex justify-between items-center text-[10px]">
+                    <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex justify-between items-center text-[10px]">
                       <span className="font-semibold text-brand-text">Lease Duration Days:</span>
                       <strong className="text-primary text-xs font-extrabold">{durationDays} Days</strong>
                     </div>

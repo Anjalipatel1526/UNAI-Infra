@@ -11,7 +11,7 @@ export const mockRentalRequests: RentalRequest[] = [];
 export const mockActivityLogs: ActivityLog[] = [];
 
 export const defaultSystemSettings: SystemSettings = {
-  companyName: 'NH Homes Civil Equipment Rental',
+  companyName: 'UNAI Infra Civil Equipment Rental',
   gstNumber: '27AABCN8877K1Z4',
   invoicePrefix: 'INV-2026-',
   currency: 'INR',

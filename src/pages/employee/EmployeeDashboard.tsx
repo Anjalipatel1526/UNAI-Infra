@@ -46,7 +46,7 @@ export const EmployeeDashboard: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardBody className="flex items-center gap-4">
-            <div className="p-3 bg-orange-50 text-primary rounded-xl border border-orange-100">
+            <div className="p-3 bg-blue-50 text-primary rounded-xl border border-blue-100">
               <HiOutlineUserGroup className="h-6 w-6" />
             </div>
             <div>

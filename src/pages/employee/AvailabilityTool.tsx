@@ -185,7 +185,7 @@ export const AvailabilityTool: React.FC = () => {
                         )}
                         {status === 'Overlapped' && (
                           <>
-                            <HiOutlineExclamationCircle className="h-5 w-5 text-orange-600" />
+                            <HiOutlineExclamationCircle className="h-5 w-5 text-amber-600" />
                             <Badge variant="warning">Lock Overlap</Badge>
                           </>
                         )}
@@ -198,7 +198,7 @@ export const AvailabilityTool: React.FC = () => {
                       </div>
 
                       {status === 'Overlapped' && overlapDetails && (
-                        <div className="p-3 bg-orange-50 border border-orange-100 rounded-lg max-w-sm text-[10px] leading-relaxed text-brand-text">
+                        <div className="p-3 bg-blue-50 border border-blue-100 rounded-lg max-w-sm text-[10px] leading-relaxed text-brand-text">
                           <span className="font-bold text-primary block mb-0.5">Booking Conflict Details:</span>
                           Billed to: <strong className="text-brand-text">{overlapDetails.companyName}</strong><br />
                           Dates: <strong className="text-brand-text">{overlapDetails.startDate} to {overlapDetails.expectedReturnDate}</strong><br />

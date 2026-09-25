@@ -1,5 +1,5 @@
 -- ============================================================
--- NH HOMES - ENABLE RLS + ADD MISSING COLUMNS
+-- UNAI INFRA - ENABLE RLS + ADD MISSING COLUMNS
 -- Run this in Supabase SQL Editor if tables already exist
 -- ============================================================
 
@@ -107,7 +107,7 @@ END $$;
 -- ============================================================
 
 INSERT INTO system_settings (id, company_name, company_address, company_email, company_phone, currency, tax_rate, backup_interval)
-VALUES (1, 'NH Homes Civil Equipment Rental', 'Panvel, Navi Mumbai', 'contact@nhhomes.in', '+91 98765 43210', 'INR', 18.00, 'daily')
+VALUES (1, 'UNAI Infra Civil Equipment Rental', 'Panvel, Navi Mumbai', 'contact@unaiinfra.in', '+91 98765 43210', 'INR', 18.00, 'daily')
 ON CONFLICT (id) DO NOTHING;
 
 SELECT 'RLS enabled successfully on all tables!' AS result;

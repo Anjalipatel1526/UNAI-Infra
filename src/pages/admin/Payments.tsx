@@ -124,7 +124,7 @@ export const Payments: React.FC = () => {
 
         <Card>
           <CardBody className="flex items-center gap-4">
-            <div className="p-3 bg-orange-50 text-primary rounded-xl border border-orange-100">
+            <div className="p-3 bg-blue-50 text-primary rounded-xl border border-blue-100">
               <HiOutlineCreditCard className="h-6 w-6" />
             </div>
             <div>

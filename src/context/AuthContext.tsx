@@ -51,12 +51,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // 1. Try Admin check
     if (
       (username.toLowerCase() === 'admin@gmail.com' && password === 'admin@123') ||
-      ((username.toLowerCase() === 'rohan.m' || username.toLowerCase() === 'rohan.m@nhhomes.in') && password === 'admin123')
+      ((username.toLowerCase() === 'rohan.m' || username.toLowerCase() === 'rohan.m@unaiinfra.in' || username.toLowerCase() === 'rohan.m@nhhomes.in') && password === 'admin123')
     ) {
       authenticatedUser = {
         id: 'user-admin',
         username: 'rohan.m',
-        email: 'rohan.m@nhhomes.in',
+        email: 'rohan.m@unaiinfra.in',
         role: 'admin',
         name: 'Admin',
         profileImage: '',
@@ -65,22 +65,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       detectedRole = 'admin';
     } 
     // 2. Try Employee check
-    else if ((username.toLowerCase() === 'vikram.s' || username.toLowerCase() === 'vikram.s@nhhomes.in') && password === 'employee123') {
+    else if ((username.toLowerCase() === 'vikram.s' || username.toLowerCase() === 'vikram.s@unaiinfra.in' || username.toLowerCase() === 'vikram.s@nhhomes.in') && password === 'employee123') {
       authenticatedUser = {
         id: 'user-emp-1',
         username: 'vikram.s',
-        email: 'vikram.s@nhhomes.in',
+        email: 'vikram.s@unaiinfra.in',
         role: 'employee',
         name: 'Vikram Singh',
         profileImage: '',
         entityId: 'emp-1'
       };
       detectedRole = 'employee';
-    } else if ((username.toLowerCase() === 'neha.s' || username.toLowerCase() === 'neha.s@nhhomes.in') && password === 'employee123') {
+    } else if ((username.toLowerCase() === 'neha.s' || username.toLowerCase() === 'neha.s@unaiinfra.in' || username.toLowerCase() === 'neha.s@nhhomes.in') && password === 'employee123') {
       authenticatedUser = {
         id: 'user-emp-2',
         username: 'neha.s',
-        email: 'neha.s@nhhomes.in',
+        email: 'neha.s@unaiinfra.in',
         role: 'employee',
         name: 'Neha Sharma',
         profileImage: '',

@@ -42,7 +42,7 @@ export const Avatar: React.FC<AvatarProps> = ({
       ) : (
         <div
           className={clsx(
-            'rounded-full bg-orange-100 border border-orange-200 text-primary flex items-center justify-center font-semibold uppercase tracking-wider',
+            'rounded-full bg-blue-100 border border-blue-200 text-primary flex items-center justify-center font-semibold uppercase tracking-wider',
             sizes[size]
           )}
         >
