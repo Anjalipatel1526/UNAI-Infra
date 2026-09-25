@@ -169,6 +169,24 @@ export interface RentalRequest {
   approvedAt?: string;
   invoiceDate?: string;
   amountPaid: number;
+  documentType?: 'Invoice' | 'Voucher' | 'Receipt';
+  dueDate?: string;
+  gstNumber?: string;
+  email?: string;
+  phone?: string;
+  billingAddress?: string;
+  state?: string;
+  pincode?: string;
+  shippingAddressSameAsBilling?: boolean;
+  shippingAddress?: string;
+  shippingState?: string;
+  shippingPincode?: string;
+  taxCalculationMode?: 'CGST_SGST' | 'IGST' | 'Exempt';
+  discountType?: 'percentage' | 'fixed';
+  discountValue?: number;
+  applyRoundOff?: boolean;
+  terms?: string;
+  signatureImage?: string;
 }
 
 export interface ActivityLog {

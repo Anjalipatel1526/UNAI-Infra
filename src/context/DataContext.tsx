@@ -27,11 +27,19 @@ interface DataContextType {
   updateInventoryItem: (id: string, item: Partial<InventoryItem>) => void | Promise<void>;
   deleteInventoryItem: (id: string) => void | Promise<void>;
   
-  // Rental Actions
+  // Rental & Invoice Actions
   submitRentalRequest: (request: Omit<RentalRequest, 'id' | 'rentalNumber' | 'invoiceNumber' | 'status' | 'createdAt' | 'amountPaid'>) => void;
   approveRentalRequest: (id: string, additionalCharges: AdditionalCharges, discountTotal: number, gstTotal: number, grandTotal: number) => void;
   rejectRentalRequest: (id: string) => void;
   recordPayment: (id: string, amount: number, method: 'UPI' | 'Cash' | 'Cheque' | 'Bank Transfer') => void;
+  createInvoice: (invoice: Partial<RentalRequest> & {
+    invoiceNumber: string;
+    clientName: string;
+    companyName: string;
+    grandTotal: number;
+    items: any[];
+  }) => Promise<RentalRequest>;
+  deleteInvoice: (id: string) => Promise<void>;
   
   // Settings Actions
   updateSettings: (settings: SystemSettings) => void;
@@ -884,6 +892,115 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const createInvoice = async (invoiceData: Partial<RentalRequest> & {
+    invoiceNumber: string;
+    clientName: string;
+    companyName: string;
+    grandTotal: number;
+    items: any[];
+  }) => {
+    const id = invoiceData.id || `inv-${Date.now()}`;
+    const invoiceDate = invoiceData.invoiceDate || new Date().toISOString().split('T')[0];
+    const newInvoice: RentalRequest = {
+      id,
+      rentalNumber: invoiceData.rentalNumber || invoiceData.invoiceNumber,
+      invoiceNumber: invoiceData.invoiceNumber,
+      clientId: invoiceData.clientId || `client-${Date.now()}`,
+      clientName: invoiceData.clientName,
+      companyName: invoiceData.companyName,
+      startDate: invoiceData.startDate || invoiceDate,
+      endDate: invoiceData.endDate || invoiceDate,
+      expectedReturnDate: invoiceData.expectedReturnDate || invoiceData.dueDate || invoiceDate,
+      status: 'Approved',
+      grandTotal: invoiceData.grandTotal,
+      amountPaid: invoiceData.amountPaid || (invoiceData.paymentStatus === 'Completed' ? invoiceData.grandTotal : 0),
+      securityDepositTotal: invoiceData.securityDepositTotal || 0,
+      gstTotal: invoiceData.gstTotal || 0,
+      discountTotal: invoiceData.discountTotal || 0,
+      rentalChargesTotal: invoiceData.rentalChargesTotal || invoiceData.grandTotal,
+      additionalCharges: invoiceData.additionalCharges || { transportation: 0, loading: 0, unloading: 0, delivery: 0, damage: 0, lateFee: 0 },
+      paymentStatus: invoiceData.paymentStatus || (invoiceData.amountPaid && invoiceData.amountPaid >= invoiceData.grandTotal ? 'Completed' : 'Pending'),
+      paymentMethod: invoiceData.paymentMethod || 'Bank Transfer',
+      notes: invoiceData.notes || '',
+      createdAt: new Date().toISOString(),
+      approvedAt: new Date().toISOString(),
+      invoiceDate,
+      items: invoiceData.items || [],
+      documentType: invoiceData.documentType || 'Invoice',
+      dueDate: invoiceData.dueDate,
+      gstNumber: invoiceData.gstNumber,
+      email: invoiceData.email,
+      phone: invoiceData.phone,
+      billingAddress: invoiceData.billingAddress,
+      state: invoiceData.state,
+      pincode: invoiceData.pincode,
+      shippingAddressSameAsBilling: invoiceData.shippingAddressSameAsBilling,
+      shippingAddress: invoiceData.shippingAddress,
+      shippingState: invoiceData.shippingState,
+      shippingPincode: invoiceData.shippingPincode,
+      taxCalculationMode: invoiceData.taxCalculationMode,
+      discountType: invoiceData.discountType,
+      discountValue: invoiceData.discountValue,
+      applyRoundOff: invoiceData.applyRoundOff,
+      terms: invoiceData.terms,
+      signatureImage: invoiceData.signatureImage
+    };
+
+    const updated = [newInvoice, ...rentalRequests];
+    saveRentals(updated);
+
+    if (newInvoice.clientId || newInvoice.clientName) {
+      const matchedClient = clients.find(c => c.id === newInvoice.clientId || c.name.toLowerCase() === newInvoice.clientName.toLowerCase());
+      if (matchedClient) {
+        const newPayment = {
+          invoiceNumber: newInvoice.invoiceNumber,
+          date: invoiceDate,
+          amount: newInvoice.amountPaid,
+          method: (newInvoice.paymentMethod || 'Bank Transfer') as any,
+          status: newInvoice.paymentStatus as any
+        };
+        const updatedClients = clients.map(c => c.id === matchedClient.id ? { ...c, paymentHistory: [newPayment, ...c.paymentHistory] } : c);
+        saveClients(updatedClients);
+      }
+    }
+
+    try {
+      await supabase.from('rental_requests').insert({
+        id: newInvoice.id,
+        rental_number: newInvoice.rentalNumber,
+        invoice_number: newInvoice.invoiceNumber,
+        client_name: newInvoice.clientName,
+        company_name: newInvoice.companyName,
+        start_date: newInvoice.startDate,
+        end_date: newInvoice.endDate,
+        expected_return_date: newInvoice.expectedReturnDate,
+        status: 'Approved',
+        grand_total: newInvoice.grandTotal,
+        amount_paid: newInvoice.amountPaid,
+        gst_total: newInvoice.gstTotal,
+        discount_total: newInvoice.discountTotal,
+        payment_status: newInvoice.paymentStatus,
+        payment_method: newInvoice.paymentMethod,
+        invoice_date: newInvoice.invoiceDate,
+        notes: newInvoice.notes
+      });
+    } catch (err) {
+      // gracefully ignore Supabase if offline or table schema differences
+    }
+
+    return newInvoice;
+  };
+
+  const deleteInvoice = async (id: string) => {
+    const updated = rentalRequests.filter(r => r.id !== id);
+    saveRentals(updated);
+    try {
+      await supabase.from('rental_requests').delete().eq('id', id);
+    } catch (err) {
+      // ignore
+    }
+  };
+
   const updateSettings = async (updatedSettings: SystemSettings) => {
     try {
       const { error } = await supabase.from('system_settings').upsert({
@@ -926,6 +1043,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         approveRentalRequest,
         rejectRentalRequest,
         recordPayment,
+        createInvoice,
+        deleteInvoice,
         updateSettings,
         logActivity
       }}
