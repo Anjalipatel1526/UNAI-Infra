@@ -3,6 +3,7 @@ import { useData } from '../../context/DataContext';
 import { Card, CardBody, CardHeader } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
+import { Modal } from '../../components/ui/Modal';
 import { toast } from 'react-toastify';
 import { jsPDF } from 'jspdf';
 import {
@@ -11,14 +12,34 @@ import {
   HiOutlineChartPie,
   HiOutlineBriefcase,
   HiOutlineCreditCard,
-  HiOutlineWrench
+  HiOutlineWrench,
+  HiOutlineChevronRight,
+  HiOutlineMapPin,
+  HiOutlinePhone,
+  HiOutlineEnvelope,
+  HiOutlineSquare3Stack3D,
+  HiOutlineBuildingOffice2,
+  HiOutlineCalendarDays
 } from 'react-icons/hi2';
+import type { RentalRequest, InventoryItem, Client, MaintenanceRecord } from '../../types';
 
 type ReportType = 'revenue' | 'inventory' | 'rentals' | 'clients' | 'maintenance';
 
 export const Reports: React.FC = () => {
   const { clients, inventory, rentalRequests } = useData();
   const [reportType, setReportType] = useState<ReportType>('revenue');
+
+  // Selected item states for mobile detail modal
+  const [selectedRevenueItem, setSelectedRevenueItem] = useState<RentalRequest | null>(null);
+  const [selectedInventoryItem, setSelectedInventoryItem] = useState<InventoryItem | null>(null);
+  const [selectedRentalItem, setSelectedRentalItem] = useState<RentalRequest | null>(null);
+  const [selectedClientItem, setSelectedClientItem] = useState<Client | null>(null);
+  const [selectedMaintenanceItem, setSelectedMaintenanceItem] = useState<{
+    equipmentId: string;
+    name: string;
+    category: string;
+    log: MaintenanceRecord;
+  } | null>(null);
 
   // CSV Generator Utility
   const downloadCSV = (headers: string[], rows: string[][], filename: string) => {
@@ -221,15 +242,15 @@ export const Reports: React.FC = () => {
           <p className="text-xs text-brand-dark-grey mt-0.5">Export operational metrics, maintenance schedules, tax invoices, and accounting audits.</p>
         </div>
         
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => handleExport('CSV')} leftIcon={<HiOutlineArrowDownTray />}>
-            Export CSV
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap">
+          <Button variant="outline" size="sm" onClick={() => handleExport('CSV')} leftIcon={<HiOutlineArrowDownTray />} className="shrink-0">
+            CSV
           </Button>
-          <Button variant="outline" size="sm" onClick={() => handleExport('Excel')}>
-            Export Excel
+          <Button variant="outline" size="sm" onClick={() => handleExport('Excel')} className="shrink-0">
+            Excel
           </Button>
-          <Button variant="primary" size="sm" onClick={() => handleExport('PDF')} leftIcon={<HiOutlineDocumentText />}>
-            Download PDF Report
+          <Button variant="primary" size="sm" onClick={() => handleExport('PDF')} leftIcon={<HiOutlineDocumentText />} className="shrink-0">
+            Download PDF
           </Button>
         </div>
       </div>
@@ -237,65 +258,65 @@ export const Reports: React.FC = () => {
       {/* Selector Side Panel + Visualizer Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Left selector */}
-        <div className="space-y-1.5">
+        <div className="flex md:flex-col gap-1.5 overflow-x-auto no-scrollbar pb-1 whitespace-nowrap">
           <button
             onClick={() => setReportType('revenue')}
-            className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-3 ${
+            className={`px-4 py-2.5 md:py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-2 shrink-0 ${
               reportType === 'revenue'
-                ? 'bg-blue-50 border-blue-100 text-primary'
+                ? 'bg-blue-50 border-blue-100 text-primary shadow-xs'
                 : 'bg-white border-brand-border text-brand-dark-grey hover:bg-brand-light-grey'
             }`}
           >
-            <HiOutlineCreditCard className="h-5 w-5" />
-            <span>Revenue Report</span>
+            <HiOutlineCreditCard className="h-4 w-4 shrink-0" />
+            <span>Revenue</span>
           </button>
           
           <button
             onClick={() => setReportType('inventory')}
-            className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-3 ${
+            className={`px-4 py-2.5 md:py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-2 shrink-0 ${
               reportType === 'inventory'
-                ? 'bg-blue-50 border-blue-100 text-primary'
+                ? 'bg-blue-50 border-blue-100 text-primary shadow-xs'
                 : 'bg-white border-brand-border text-brand-dark-grey hover:bg-brand-light-grey'
             }`}
           >
-            <HiOutlineChartPie className="h-5 w-5" />
-            <span>Inventory Status</span>
+            <HiOutlineChartPie className="h-4 w-4 shrink-0" />
+            <span>Inventory</span>
           </button>
           
           <button
             onClick={() => setReportType('rentals')}
-            className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-3 ${
+            className={`px-4 py-2.5 md:py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-2 shrink-0 ${
               reportType === 'rentals'
-                ? 'bg-blue-50 border-blue-100 text-primary'
+                ? 'bg-blue-50 border-blue-100 text-primary shadow-xs'
                 : 'bg-white border-brand-border text-brand-dark-grey hover:bg-brand-light-grey'
             }`}
           >
-            <HiOutlineDocumentText className="h-5 w-5" />
-            <span>Rental Activity Report</span>
+            <HiOutlineDocumentText className="h-4 w-4 shrink-0" />
+            <span>Rentals</span>
           </button>
 
           <button
             onClick={() => setReportType('clients')}
-            className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-3 ${
+            className={`px-4 py-2.5 md:py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-2 shrink-0 ${
               reportType === 'clients'
-                ? 'bg-blue-50 border-blue-100 text-primary'
+                ? 'bg-blue-50 border-blue-100 text-primary shadow-xs'
                 : 'bg-white border-brand-border text-brand-dark-grey hover:bg-brand-light-grey'
             }`}
           >
-            <HiOutlineBriefcase className="h-5 w-5" />
-            <span>Clients Ledger Report</span>
+            <HiOutlineBriefcase className="h-4 w-4 shrink-0" />
+            <span>Clients</span>
           </button>
 
           <button
             onClick={() => setReportType('maintenance')}
-            className={`w-full text-left px-4 py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-3 ${
+            className={`px-4 py-2.5 md:py-3 rounded-xl border text-xs font-bold transition-all duration-150 flex items-center gap-2 shrink-0 ${
               reportType === 'maintenance'
-                ? 'bg-blue-50 border-blue-100 text-primary'
+                ? 'bg-blue-50 border-blue-100 text-primary shadow-xs'
                 : 'bg-white border-brand-border text-brand-dark-grey hover:bg-brand-light-grey'
             }`}
           >
-            <HiOutlineWrench className="h-5 w-5" />
-            <span>Maintenance Expenses</span>
+            <HiOutlineWrench className="h-4 w-4 shrink-0" />
+            <span>Maintenance</span>
           </button>
         </div>
 
@@ -305,158 +326,714 @@ export const Reports: React.FC = () => {
             <h3 className="font-extrabold text-xs text-brand-text uppercase tracking-wider capitalize">{reportType} Report Analysis</h3>
             <span className="text-[10px] text-brand-dark-grey font-medium">Real-time entries in active database</span>
           </CardHeader>
-          <CardBody className="p-0 overflow-x-auto">
+          <CardBody className="p-0">
             {reportType === 'revenue' && (
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="bg-brand-light-grey border-b border-brand-border text-brand-dark-grey font-bold uppercase tracking-wider">
-                    <th className="px-4 py-3">Invoice No</th>
-                    <th className="px-4 py-3">Client Representative</th>
-                    <th className="px-4 py-3">GST Tax</th>
-                    <th className="px-4 py-3">Grand Total</th>
-                    <th className="px-4 py-3">Paid Amount</th>
-                    <th className="px-4 py-3">Dues</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-brand-border">
-                  {rentalRequests.filter(r => r.status === 'Approved').map(r => (
-                    <tr key={r.id}>
-                      <td className="px-4 py-3 font-bold text-brand-text font-mono">{r.invoiceNumber}</td>
-                      <td className="px-4 py-3 font-semibold text-brand-text">{r.clientName}</td>
-                      <td className="px-4 py-3 font-medium text-brand-text">₹{r.gstTotal.toLocaleString()}</td>
-                      <td className="px-4 py-3 font-bold text-brand-text">₹{r.grandTotal.toLocaleString()}</td>
-                      <td className="px-4 py-3 font-bold text-green-600">₹{r.amountPaid.toLocaleString()}</td>
-                      <td className="px-4 py-3 font-bold text-red-600">₹{(r.grandTotal - r.amountPaid).toLocaleString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <>
+                {/* DESKTOP TABLE */}
+                <div className="hidden lg:block overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-brand-light-grey border-b border-brand-border text-brand-dark-grey font-bold uppercase tracking-wider">
+                        <th className="px-4 py-3">Invoice No</th>
+                        <th className="px-4 py-3">Client Representative</th>
+                        <th className="px-4 py-3">GST Tax</th>
+                        <th className="px-4 py-3">Grand Total</th>
+                        <th className="px-4 py-3">Paid Amount</th>
+                        <th className="px-4 py-3">Dues</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-brand-border">
+                      {rentalRequests.filter(r => r.status === 'Approved').map(r => (
+                        <tr key={r.id}>
+                          <td className="px-4 py-3 font-bold text-brand-text font-mono">{r.invoiceNumber}</td>
+                          <td className="px-4 py-3 font-semibold text-brand-text">{r.clientName}</td>
+                          <td className="px-4 py-3 font-medium text-brand-text">₹{r.gstTotal.toLocaleString()}</td>
+                          <td className="px-4 py-3 font-bold text-brand-text">₹{r.grandTotal.toLocaleString()}</td>
+                          <td className="px-4 py-3 font-bold text-green-600">₹{r.amountPaid.toLocaleString()}</td>
+                          <td className="px-4 py-3 font-bold text-red-600">₹{(r.grandTotal - r.amountPaid).toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* MOBILE & TABLET CARDS */}
+                <div className="block lg:hidden divide-y divide-brand-border">
+                  {rentalRequests.filter(r => r.status === 'Approved').length === 0 ? (
+                    <div className="p-6 text-center text-brand-dark-grey italic">No approved revenue records found.</div>
+                  ) : (
+                    rentalRequests.filter(r => r.status === 'Approved').map(r => (
+                      <div
+                        key={r.id}
+                        onClick={() => setSelectedRevenueItem(r)}
+                        className="p-4 transition-all duration-200 cursor-pointer text-left hover:bg-brand-light-grey/40 active:bg-blue-50/30"
+                      >
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <span className="font-mono font-bold text-xs bg-blue-50 text-primary px-2.5 py-1 rounded-lg border border-blue-200/60 inline-flex items-center gap-1.5">
+                            <HiOutlineDocumentText className="h-3.5 w-3.5" />
+                            {r.invoiceNumber}
+                          </span>
+                          <span className="text-xs font-extrabold text-primary">
+                            ₹{r.grandTotal.toLocaleString()}
+                          </span>
+                        </div>
+
+                        <div className="mb-2">
+                          <h4 className="font-extrabold text-sm text-brand-text leading-snug">{r.clientName}</h4>
+                          <p className="text-[11px] text-brand-dark-grey font-medium mt-0.5">{r.companyName}</p>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-1.5 my-2">
+                          <span className="text-[10px] font-bold bg-green-50 text-green-700 border border-green-200/60 px-2 py-0.5 rounded-md">
+                            Paid: ₹{r.amountPaid.toLocaleString()}
+                          </span>
+                          <span className="text-[10px] font-bold bg-red-50 text-red-600 border border-red-200/60 px-2 py-0.5 rounded-md">
+                            Due: ₹{(r.grandTotal - r.amountPaid).toLocaleString()}
+                          </span>
+                          <span className="text-[10px] font-medium bg-stone-100 text-stone-600 border border-stone-200/60 px-2 py-0.5 rounded-md">
+                            GST: ₹{r.gstTotal.toLocaleString()}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-[11px] text-stone-500 pt-2 border-t border-brand-border/40">
+                          <span className="flex items-center gap-1 truncate font-medium">
+                            <HiOutlineCalendarDays className="h-3.5 w-3.5 text-stone-400 shrink-0" />
+                            {r.startDate} → {r.expectedReturnDate}
+                          </span>
+                          <span className="text-[10px] font-semibold text-primary shrink-0 flex items-center gap-0.5 hover:underline">
+                            Tap for entire details
+                            <HiOutlineChevronRight className="h-3.5 w-3.5" />
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </>
             )}
 
             {reportType === 'inventory' && (
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="bg-brand-light-grey border-b border-brand-border text-brand-dark-grey font-bold uppercase tracking-wider">
-                    <th className="px-4 py-3">Equipment ID</th>
-                    <th className="px-4 py-3">Asset Name</th>
-                    <th className="px-4 py-3">Category</th>
-                    <th className="px-4 py-3">Daily Rent Rate</th>
-                    <th className="px-4 py-3">Status</th>
-                    <th className="px-4 py-3">Location</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-brand-border">
-                  {inventory.map(i => (
-                    <tr key={i.id}>
-                      <td className="px-4 py-3 font-bold text-brand-text font-mono">{i.equipmentId}</td>
-                      <td className="px-4 py-3 font-semibold text-brand-text">{i.name}</td>
-                      <td className="px-4 py-3 font-medium text-brand-dark-grey">{i.category}</td>
-                      <td className="px-4 py-3 font-bold text-primary">₹{i.rentalPriceDay.toLocaleString()}/day</td>
-                      <td className="px-4 py-3"><Badge variant={i.status === 'Available' ? 'success' : 'brand'}>{i.status}</Badge></td>
-                      <td className="px-4 py-3 font-medium text-brand-text">{i.currentLocation}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <>
+                {/* DESKTOP TABLE */}
+                <div className="hidden lg:block overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-brand-light-grey border-b border-brand-border text-brand-dark-grey font-bold uppercase tracking-wider">
+                        <th className="px-4 py-3">Equipment ID</th>
+                        <th className="px-4 py-3">Asset Name</th>
+                        <th className="px-4 py-3">Category</th>
+                        <th className="px-4 py-3">Daily Rent Rate</th>
+                        <th className="px-4 py-3">Status</th>
+                        <th className="px-4 py-3">Location</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-brand-border">
+                      {inventory.map(i => (
+                        <tr key={i.id}>
+                          <td className="px-4 py-3 font-bold text-brand-text font-mono">{i.equipmentId}</td>
+                          <td className="px-4 py-3 font-semibold text-brand-text">{i.name}</td>
+                          <td className="px-4 py-3 font-medium text-brand-dark-grey">{i.category}</td>
+                          <td className="px-4 py-3 font-bold text-primary">₹{i.rentalPriceDay.toLocaleString()}/day</td>
+                          <td className="px-4 py-3"><Badge variant={i.status === 'Available' ? 'success' : 'brand'}>{i.status}</Badge></td>
+                          <td className="px-4 py-3 font-medium text-brand-text">{i.currentLocation}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* MOBILE & TABLET CARDS */}
+                <div className="block lg:hidden divide-y divide-brand-border">
+                  {inventory.length === 0 ? (
+                    <div className="p-6 text-center text-brand-dark-grey italic">No inventory assets recorded.</div>
+                  ) : (
+                    inventory.map(i => (
+                      <div
+                        key={i.id}
+                        onClick={() => setSelectedInventoryItem(i)}
+                        className="p-4 transition-all duration-200 cursor-pointer text-left hover:bg-brand-light-grey/40 active:bg-blue-50/30"
+                      >
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <span className="font-mono font-bold text-xs bg-blue-50 text-primary px-2.5 py-1 rounded-lg border border-blue-200/60 inline-flex items-center gap-1.5">
+                            <HiOutlineSquare3Stack3D className="h-3.5 w-3.5" />
+                            {i.equipmentId}
+                          </span>
+                          <Badge variant={i.status === 'Available' ? 'success' : 'brand'}>{i.status}</Badge>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                          {i.images[0] ? (
+                            <img src={i.images[0]} alt={i.name} className="h-14 w-14 rounded-xl object-cover border border-brand-border shrink-0" />
+                          ) : (
+                            <div className="h-14 w-14 rounded-xl border border-dashed border-brand-border bg-brand-light-grey flex items-center justify-center shrink-0">
+                              <HiOutlineSquare3Stack3D className="h-6 w-6 text-brand-dark-grey opacity-40" />
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-extrabold text-sm text-brand-text leading-snug line-clamp-1">{i.name}</h4>
+                            <p className="text-[11px] text-brand-dark-grey font-medium mt-0.5 truncate">{i.brand} • {i.model}</p>
+                            <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                              <span className="text-[10px] bg-brand-light-grey text-brand-dark-grey font-semibold px-2 py-0.5 rounded-md border border-brand-border/60">
+                                {i.category}
+                              </span>
+                              <span className="text-xs font-extrabold text-primary">
+                                ₹{i.rentalPriceDay.toLocaleString()}<span className="text-[10px] font-normal text-stone-400">/day</span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between text-[11px] text-stone-500 mt-2.5 pt-2 border-t border-brand-border/40">
+                          <span className="flex items-center gap-1 truncate font-medium">
+                            <HiOutlineMapPin className="h-3.5 w-3.5 text-stone-400 shrink-0" />
+                            {i.currentLocation}
+                          </span>
+                          <span className="text-[10px] font-semibold text-primary shrink-0 flex items-center gap-0.5 hover:underline">
+                            Tap for entire details
+                            <HiOutlineChevronRight className="h-3.5 w-3.5" />
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </>
             )}
 
             {reportType === 'rentals' && (
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="bg-brand-light-grey border-b border-brand-border text-brand-dark-grey font-bold uppercase tracking-wider">
-                    <th className="px-4 py-3">Rental Number</th>
-                    <th className="px-4 py-3">Client Representative</th>
-                    <th className="px-4 py-3">Company Name</th>
-                    <th className="px-4 py-3">Start Date</th>
-                    <th className="px-4 py-3">Expected Return</th>
-                    <th className="px-4 py-3">Grand Total</th>
-                    <th className="px-4 py-3">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-brand-border">
-                  {rentalRequests.map(r => (
-                    <tr key={r.id}>
-                      <td className="px-4 py-3 font-bold text-brand-text font-mono">{r.rentalNumber || 'Pending Approval'}</td>
-                      <td className="px-4 py-3 font-semibold text-brand-text">{r.clientName}</td>
-                      <td className="px-4 py-3 font-medium text-brand-dark-grey">{r.companyName}</td>
-                      <td className="px-4 py-3 font-semibold text-brand-text">{r.startDate}</td>
-                      <td className="px-4 py-3 font-semibold text-brand-text">{r.expectedReturnDate}</td>
-                      <td className="px-4 py-3 font-bold text-primary">₹{r.grandTotal.toLocaleString()}</td>
-                      <td className="px-4 py-3"><Badge variant={r.status === 'Approved' ? 'success' : r.status === 'Pending' ? 'warning' : 'danger'}>{r.status}</Badge></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <>
+                {/* DESKTOP TABLE */}
+                <div className="hidden lg:block overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-brand-light-grey border-b border-brand-border text-brand-dark-grey font-bold uppercase tracking-wider">
+                        <th className="px-4 py-3">Rental Number</th>
+                        <th className="px-4 py-3">Client Representative</th>
+                        <th className="px-4 py-3">Company Name</th>
+                        <th className="px-4 py-3">Start Date</th>
+                        <th className="px-4 py-3">Expected Return</th>
+                        <th className="px-4 py-3">Grand Total</th>
+                        <th className="px-4 py-3">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-brand-border">
+                      {rentalRequests.map(r => (
+                        <tr key={r.id}>
+                          <td className="px-4 py-3 font-bold text-brand-text font-mono">{r.rentalNumber || 'Pending Approval'}</td>
+                          <td className="px-4 py-3 font-semibold text-brand-text">{r.clientName}</td>
+                          <td className="px-4 py-3 font-medium text-brand-dark-grey">{r.companyName}</td>
+                          <td className="px-4 py-3 font-semibold text-brand-text">{r.startDate}</td>
+                          <td className="px-4 py-3 font-semibold text-brand-text">{r.expectedReturnDate}</td>
+                          <td className="px-4 py-3 font-bold text-primary">₹{r.grandTotal.toLocaleString()}</td>
+                          <td className="px-4 py-3"><Badge variant={r.status === 'Approved' ? 'success' : r.status === 'Pending' ? 'warning' : 'danger'}>{r.status}</Badge></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* MOBILE & TABLET CARDS */}
+                <div className="block lg:hidden divide-y divide-brand-border">
+                  {rentalRequests.length === 0 ? (
+                    <div className="p-6 text-center text-brand-dark-grey italic">No rental requests found.</div>
+                  ) : (
+                    rentalRequests.map(r => (
+                      <div
+                        key={r.id}
+                        onClick={() => setSelectedRentalItem(r)}
+                        className="p-4 transition-all duration-200 cursor-pointer text-left hover:bg-brand-light-grey/40 active:bg-blue-50/30"
+                      >
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <span className="font-mono font-bold text-xs bg-blue-50 text-primary px-2.5 py-1 rounded-lg border border-blue-200/60 inline-flex items-center gap-1.5">
+                            <HiOutlineDocumentText className="h-3.5 w-3.5" />
+                            {r.rentalNumber || 'Pending Approval'}
+                          </span>
+                          <Badge variant={r.status === 'Approved' ? 'success' : r.status === 'Pending' ? 'warning' : 'danger'}>
+                            {r.status}
+                          </Badge>
+                        </div>
+
+                        <div className="mb-2">
+                          <h4 className="font-extrabold text-sm text-brand-text leading-snug">{r.clientName}</h4>
+                          <p className="text-[11px] text-brand-dark-grey font-medium mt-0.5">{r.companyName}</p>
+                        </div>
+
+                        <div className="flex items-center justify-between my-2">
+                          <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2 py-0.5 rounded-md">
+                            {r.items?.length || 1} items
+                          </span>
+                          <span className="text-xs font-extrabold text-primary">
+                            Total: ₹{r.grandTotal.toLocaleString()}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-[11px] text-stone-500 pt-2 border-t border-brand-border/40">
+                          <span className="flex items-center gap-1 truncate font-medium">
+                            <HiOutlineCalendarDays className="h-3.5 w-3.5 text-stone-400 shrink-0" />
+                            {r.startDate} → {r.expectedReturnDate}
+                          </span>
+                          <span className="text-[10px] font-semibold text-primary shrink-0 flex items-center gap-0.5 hover:underline">
+                            Tap for entire details
+                            <HiOutlineChevronRight className="h-3.5 w-3.5" />
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </>
             )}
 
             {reportType === 'clients' && (
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="bg-brand-light-grey border-b border-brand-border text-brand-dark-grey font-bold uppercase tracking-wider">
-                    <th className="px-4 py-3">Client Representative Name</th>
-                    <th className="px-4 py-3">Company Name</th>
-                    <th className="px-4 py-3">GSTIN Tax Registration</th>
-                    <th className="px-4 py-3">Phone</th>
-                    <th className="px-4 py-3">Email Address</th>
-                    <th className="px-4 py-3">City</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-brand-border">
-                  {clients.map(c => (
-                    <tr key={c.id}>
-                      <td className="px-4 py-3 font-bold text-brand-text">{c.name}</td>
-                      <td className="px-4 py-3 font-semibold text-brand-text">{c.companyName}</td>
-                      <td className="px-4 py-3 font-bold text-brand-text font-mono">{c.gstNumber}</td>
-                      <td className="px-4 py-3 font-medium text-brand-dark-grey">{c.phone}</td>
-                      <td className="px-4 py-3 font-medium text-brand-dark-grey">{c.email}</td>
-                      <td className="px-4 py-3 font-medium text-brand-text">{c.city}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <>
+                {/* DESKTOP TABLE */}
+                <div className="hidden lg:block overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-brand-light-grey border-b border-brand-border text-brand-dark-grey font-bold uppercase tracking-wider">
+                        <th className="px-4 py-3">Client Representative Name</th>
+                        <th className="px-4 py-3">Company Name</th>
+                        <th className="px-4 py-3">GSTIN Tax Registration</th>
+                        <th className="px-4 py-3">Phone</th>
+                        <th className="px-4 py-3">Email Address</th>
+                        <th className="px-4 py-3">City</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-brand-border">
+                      {clients.map(c => (
+                        <tr key={c.id}>
+                          <td className="px-4 py-3 font-bold text-brand-text">{c.name}</td>
+                          <td className="px-4 py-3 font-semibold text-brand-text">{c.companyName}</td>
+                          <td className="px-4 py-3 font-bold text-brand-text font-mono">{c.gstNumber}</td>
+                          <td className="px-4 py-3 font-medium text-brand-dark-grey">{c.phone}</td>
+                          <td className="px-4 py-3 font-medium text-brand-dark-grey">{c.email}</td>
+                          <td className="px-4 py-3 font-medium text-brand-text">{c.city}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* MOBILE & TABLET CARDS */}
+                <div className="block lg:hidden divide-y divide-brand-border">
+                  {clients.length === 0 ? (
+                    <div className="p-6 text-center text-brand-dark-grey italic">No client records found.</div>
+                  ) : (
+                    clients.map(c => (
+                      <div
+                        key={c.id}
+                        onClick={() => setSelectedClientItem(c)}
+                        className="p-4 transition-all duration-200 cursor-pointer text-left hover:bg-brand-light-grey/40 active:bg-blue-50/30"
+                      >
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <span className="font-mono font-bold text-xs bg-blue-50 text-primary px-2.5 py-1 rounded-lg border border-blue-200/60 inline-flex items-center gap-1.5 truncate max-w-[220px]">
+                            <HiOutlineBuildingOffice2 className="h-3.5 w-3.5 shrink-0" />
+                            <span className="truncate">{c.companyName}</span>
+                          </span>
+                          <Badge variant={c.status === 'Active' ? 'success' : 'neutral'}>{c.status}</Badge>
+                        </div>
+
+                        <div className="mb-2">
+                          <h4 className="font-extrabold text-sm text-brand-text leading-snug">{c.name}</h4>
+                          <p className="text-[10px] font-mono text-stone-500 mt-0.5">GSTIN: {c.gstNumber || 'N/A'}</p>
+                        </div>
+
+                        <div className="space-y-0.5 text-[11px] text-brand-dark-grey font-medium my-2">
+                          <span className="flex items-center gap-1.5 truncate">
+                            <HiOutlineEnvelope className="h-3.5 w-3.5 text-stone-400 shrink-0" /> {c.email}
+                          </span>
+                          <span className="flex items-center gap-1.5">
+                            <HiOutlinePhone className="h-3.5 w-3.5 text-stone-400 shrink-0" /> {c.phone}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-[11px] text-stone-500 pt-2 border-t border-brand-border/40">
+                          <span className="flex items-center gap-1 truncate font-medium">
+                            <HiOutlineMapPin className="h-3.5 w-3.5 text-stone-400 shrink-0" />
+                            {c.city || 'N/A'}, {c.state || ''}
+                          </span>
+                          <span className="text-[10px] font-semibold text-primary shrink-0 flex items-center gap-0.5 hover:underline">
+                            Tap for entire details
+                            <HiOutlineChevronRight className="h-3.5 w-3.5" />
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </>
             )}
 
             {reportType === 'maintenance' && (
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="bg-brand-light-grey border-b border-brand-border text-brand-dark-grey font-bold uppercase tracking-wider">
-                    <th className="px-4 py-3">Equipment ID</th>
-                    <th className="px-4 py-3">Asset Name</th>
-                    <th className="px-4 py-3">Service Action Type</th>
-                    <th className="px-4 py-3">Maintenance Date</th>
-                    <th className="px-4 py-3">Technician</th>
-                    <th className="px-4 py-3 text-right">Repair Cost</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-brand-border">
+              <>
+                {/* DESKTOP TABLE */}
+                <div className="hidden lg:block overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-brand-light-grey border-b border-brand-border text-brand-dark-grey font-bold uppercase tracking-wider">
+                        <th className="px-4 py-3">Equipment ID</th>
+                        <th className="px-4 py-3">Asset Name</th>
+                        <th className="px-4 py-3">Service Action Type</th>
+                        <th className="px-4 py-3">Maintenance Date</th>
+                        <th className="px-4 py-3">Technician</th>
+                        <th className="px-4 py-3 text-right">Repair Cost</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-brand-border">
+                      {(() => {
+                        const rows: React.ReactNode[] = [];
+                        inventory.forEach(item => {
+                          item.maintenanceHistory.forEach(log => {
+                            rows.push(
+                              <tr key={log.id}>
+                                <td className="px-4 py-3 font-bold text-brand-text font-mono">{item.equipmentId}</td>
+                                <td className="px-4 py-3 font-semibold text-brand-text">{item.name}</td>
+                                <td className="px-4 py-3 font-semibold text-brand-text">{log.type}</td>
+                                <td className="px-4 py-3 font-medium text-brand-dark-grey">{log.date}</td>
+                                <td className="px-4 py-3 font-medium text-brand-dark-grey">{log.technician}</td>
+                                <td className="px-4 py-3 text-right font-bold text-primary">₹{log.cost.toLocaleString()}</td>
+                              </tr>
+                            );
+                          });
+                        });
+                        return rows.length > 0 ? rows : (
+                          <tr>
+                            <td colSpan={6} className="text-center py-6 text-brand-dark-grey italic">No maintenance actions recorded.</td>
+                          </tr>
+                        );
+                      })()}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* MOBILE & TABLET CARDS */}
+                <div className="block lg:hidden divide-y divide-brand-border">
                   {(() => {
-                    const rows: React.ReactNode[] = [];
+                    const cards: React.ReactNode[] = [];
                     inventory.forEach(item => {
                       item.maintenanceHistory.forEach(log => {
-                        rows.push(
-                          <tr key={log.id}>
-                            <td className="px-4 py-3 font-bold text-brand-text font-mono">{item.equipmentId}</td>
-                            <td className="px-4 py-3 font-semibold text-brand-text">{item.name}</td>
-                            <td className="px-4 py-3 font-semibold text-brand-text">{log.type}</td>
-                            <td className="px-4 py-3 font-medium text-brand-dark-grey">{log.date}</td>
-                            <td className="px-4 py-3 font-medium text-brand-dark-grey">{log.technician}</td>
-                            <td className="px-4 py-3 text-right font-bold text-primary">₹{log.cost.toLocaleString()}</td>
-                          </tr>
+                        cards.push(
+                          <div
+                            key={log.id}
+                            onClick={() => setSelectedMaintenanceItem({ equipmentId: item.equipmentId, name: item.name, category: item.category, log })}
+                            className="p-4 transition-all duration-200 cursor-pointer text-left hover:bg-brand-light-grey/40 active:bg-blue-50/30"
+                          >
+                            <div className="flex items-center justify-between gap-2 mb-2">
+                              <span className="font-mono font-bold text-xs bg-blue-50 text-primary px-2.5 py-1 rounded-lg border border-blue-200/60 inline-flex items-center gap-1.5">
+                                <HiOutlineSquare3Stack3D className="h-3.5 w-3.5" />
+                                {item.equipmentId}
+                              </span>
+                              <span className="text-xs font-extrabold text-primary">
+                                ₹{log.cost.toLocaleString()}
+                              </span>
+                            </div>
+
+                            <div className="mb-2">
+                              <h4 className="font-extrabold text-sm text-brand-text leading-snug">{item.name}</h4>
+                              <p className="text-[11px] text-brand-dark-grey font-medium mt-0.5">{log.type} • Tech: {log.technician}</p>
+                            </div>
+
+                            <div className="flex items-center justify-between text-[11px] text-stone-500 pt-2 border-t border-brand-border/40">
+                              <span className="flex items-center gap-1 truncate font-medium">
+                                <HiOutlineCalendarDays className="h-3.5 w-3.5 text-stone-400 shrink-0" />
+                                {log.date}
+                              </span>
+                              <span className="text-[10px] font-semibold text-primary shrink-0 flex items-center gap-0.5 hover:underline">
+                                Tap for entire details
+                                <HiOutlineChevronRight className="h-3.5 w-3.5" />
+                              </span>
+                            </div>
+                          </div>
                         );
                       });
                     });
-                    return rows.length > 0 ? rows : (
-                      <tr>
-                        <td colSpan={6} className="text-center py-6 text-brand-dark-grey italic">No maintenance actions recorded.</td>
-                      </tr>
+                    return cards.length > 0 ? cards : (
+                      <div className="p-6 text-center text-brand-dark-grey italic">No maintenance actions recorded.</div>
                     );
                   })()}
-                </tbody>
-              </table>
+                </div>
+              </>
             )}
           </CardBody>
         </Card>
       </div>
+
+      {/* Revenue Detail Modal */}
+      {selectedRevenueItem && (
+        <Modal
+          isOpen={!!selectedRevenueItem}
+          onClose={() => setSelectedRevenueItem(null)}
+          headerActions={
+            <Button variant="outline" size="sm" onClick={() => setSelectedRevenueItem(null)}>
+              Close Details
+            </Button>
+          }
+          showCloseButton={false}
+          size="md"
+        >
+          <div className="space-y-4 text-left text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-brand-border">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-brand-dark-grey tracking-wider">Invoice Details</span>
+                <h3 className="text-base font-extrabold text-brand-text font-mono mt-0.5">{selectedRevenueItem.invoiceNumber}</h3>
+              </div>
+              <Badge variant={selectedRevenueItem.status === 'Approved' ? 'success' : 'neutral'}>
+                {selectedRevenueItem.status}
+              </Badge>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 bg-brand-light-grey/40 p-3.5 rounded-xl border border-brand-border/60">
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Client Name</span>
+                <span className="font-bold text-brand-text text-xs">{selectedRevenueItem.clientName}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Company Name</span>
+                <span className="font-bold text-brand-text text-xs">{selectedRevenueItem.companyName}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Rental Period</span>
+                <span className="font-medium text-brand-text text-xs">{selectedRevenueItem.startDate} to {selectedRevenueItem.expectedReturnDate}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Rental ID</span>
+                <span className="font-mono text-brand-text text-xs">{selectedRevenueItem.rentalNumber || 'N/A'}</span>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-blue-50/40 border border-blue-100 space-y-2">
+              <div className="flex justify-between text-xs">
+                <span className="text-brand-dark-grey font-medium">GST Tax</span>
+                <span className="font-bold text-brand-text">₹{selectedRevenueItem.gstTotal.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span className="text-brand-dark-grey font-medium">Grand Total</span>
+                <span className="font-extrabold text-primary text-sm">₹{selectedRevenueItem.grandTotal.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-xs pt-2 border-t border-blue-200/60">
+                <span className="text-green-700 font-bold">Amount Paid</span>
+                <span className="font-bold text-green-700">₹{selectedRevenueItem.amountPaid.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span className="text-red-600 font-bold">Balance Due</span>
+                <span className="font-bold text-red-600">₹{(selectedRevenueItem.grandTotal - selectedRevenueItem.amountPaid).toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* Inventory Item Detail Modal */}
+      {selectedInventoryItem && (
+        <Modal
+          isOpen={!!selectedInventoryItem}
+          onClose={() => setSelectedInventoryItem(null)}
+          headerActions={
+            <Button variant="outline" size="sm" onClick={() => setSelectedInventoryItem(null)}>
+              Close Details
+            </Button>
+          }
+          showCloseButton={false}
+          size="md"
+        >
+          <div className="space-y-4 text-left text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-brand-border">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-brand-dark-grey tracking-wider">Equipment Asset</span>
+                <h3 className="text-base font-extrabold text-brand-text font-mono mt-0.5">{selectedInventoryItem.equipmentId}</h3>
+              </div>
+              <Badge variant={selectedInventoryItem.status === 'Available' ? 'success' : 'brand'}>
+                {selectedInventoryItem.status}
+              </Badge>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {selectedInventoryItem.images[0] ? (
+                <img src={selectedInventoryItem.images[0]} alt={selectedInventoryItem.name} className="h-16 w-20 rounded-xl object-cover border border-brand-border" />
+              ) : null}
+              <div>
+                <h4 className="font-extrabold text-sm text-brand-text">{selectedInventoryItem.name}</h4>
+                <p className="text-xs text-brand-dark-grey font-medium">{selectedInventoryItem.brand} • {selectedInventoryItem.model}</p>
+                <span className="inline-block mt-1 text-[10px] bg-brand-light-grey text-brand-dark-grey font-semibold px-2 py-0.5 rounded-md border border-brand-border/60">
+                  {selectedInventoryItem.category}
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 bg-brand-light-grey/40 p-3.5 rounded-xl border border-brand-border/60">
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Daily Rent Rate</span>
+                <span className="font-extrabold text-primary text-xs">₹{selectedInventoryItem.rentalPriceDay.toLocaleString()}/day</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Current Yard Location</span>
+                <span className="font-medium text-brand-text text-xs">{selectedInventoryItem.currentLocation}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Serial Number</span>
+                <span className="font-mono text-brand-text text-xs">{selectedInventoryItem.serialNumber || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Purchase Price</span>
+                <span className="font-medium text-brand-text text-xs">₹{selectedInventoryItem.purchasePrice.toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* Rental Detail Modal */}
+      {selectedRentalItem && (
+        <Modal
+          isOpen={!!selectedRentalItem}
+          onClose={() => setSelectedRentalItem(null)}
+          headerActions={
+            <Button variant="outline" size="sm" onClick={() => setSelectedRentalItem(null)}>
+              Close Details
+            </Button>
+          }
+          showCloseButton={false}
+          size="md"
+        >
+          <div className="space-y-4 text-left text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-brand-border">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-brand-dark-grey tracking-wider">Rental Order</span>
+                <h3 className="text-base font-extrabold text-brand-text font-mono mt-0.5">{selectedRentalItem.rentalNumber || 'Pending'}</h3>
+              </div>
+              <Badge variant={selectedRentalItem.status === 'Approved' ? 'success' : selectedRentalItem.status === 'Pending' ? 'warning' : 'danger'}>
+                {selectedRentalItem.status}
+              </Badge>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 bg-brand-light-grey/40 p-3.5 rounded-xl border border-brand-border/60">
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Client Name</span>
+                <span className="font-bold text-brand-text text-xs">{selectedRentalItem.clientName}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Company Name</span>
+                <span className="font-bold text-brand-text text-xs">{selectedRentalItem.companyName}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Start Date</span>
+                <span className="font-medium text-brand-text text-xs">{selectedRentalItem.startDate}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Expected Return</span>
+                <span className="font-medium text-brand-text text-xs">{selectedRentalItem.expectedReturnDate}</span>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-blue-50/40 border border-blue-100 flex items-center justify-between">
+              <span className="font-semibold text-brand-text">Grand Total Amount</span>
+              <span className="text-base font-extrabold text-primary">₹{selectedRentalItem.grandTotal.toLocaleString()}</span>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* Client Detail Modal */}
+      {selectedClientItem && (
+        <Modal
+          isOpen={!!selectedClientItem}
+          onClose={() => setSelectedClientItem(null)}
+          headerActions={
+            <Button variant="outline" size="sm" onClick={() => setSelectedClientItem(null)}>
+              Close Details
+            </Button>
+          }
+          showCloseButton={false}
+          size="md"
+        >
+          <div className="space-y-4 text-left text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-brand-border">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-brand-dark-grey tracking-wider">Client Profile</span>
+                <h3 className="text-base font-extrabold text-brand-text mt-0.5">{selectedClientItem.name}</h3>
+              </div>
+              <Badge variant={selectedClientItem.status === 'Active' ? 'success' : 'neutral'}>
+                {selectedClientItem.status}
+              </Badge>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 bg-brand-light-grey/40 p-3.5 rounded-xl border border-brand-border/60">
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Company</span>
+                <span className="font-bold text-brand-text text-xs">{selectedClientItem.companyName}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">GSTIN</span>
+                <span className="font-mono text-brand-text text-xs">{selectedClientItem.gstNumber || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Email</span>
+                <span className="font-medium text-brand-text text-xs truncate">{selectedClientItem.email}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Phone</span>
+                <span className="font-medium text-brand-text text-xs">{selectedClientItem.phone}</span>
+              </div>
+              <div className="col-span-2">
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">City & State</span>
+                <span className="font-medium text-brand-text text-xs">{selectedClientItem.city || 'N/A'}, {selectedClientItem.state || ''}</span>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* Maintenance Detail Modal */}
+      {selectedMaintenanceItem && (
+        <Modal
+          isOpen={!!selectedMaintenanceItem}
+          onClose={() => setSelectedMaintenanceItem(null)}
+          headerActions={
+            <Button variant="outline" size="sm" onClick={() => setSelectedMaintenanceItem(null)}>
+              Close Details
+            </Button>
+          }
+          showCloseButton={false}
+          size="md"
+        >
+          <div className="space-y-4 text-left text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-brand-border">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-brand-dark-grey tracking-wider">Maintenance Record</span>
+                <h3 className="text-base font-extrabold text-brand-text font-mono mt-0.5">{selectedMaintenanceItem.equipmentId}</h3>
+              </div>
+              <span className="text-xs font-extrabold text-primary bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200">
+                ₹{selectedMaintenanceItem.log.cost.toLocaleString()}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 bg-brand-light-grey/40 p-3.5 rounded-xl border border-brand-border/60">
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Equipment Name</span>
+                <span className="font-bold text-brand-text text-xs">{selectedMaintenanceItem.name}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Action Type</span>
+                <span className="font-semibold text-brand-text text-xs">{selectedMaintenanceItem.log.type}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Technician</span>
+                <span className="font-medium text-brand-text text-xs">{selectedMaintenanceItem.log.technician}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-brand-dark-grey font-semibold block">Date</span>
+                <span className="font-medium text-brand-text text-xs">{selectedMaintenanceItem.log.date}</span>
+              </div>
+              {selectedMaintenanceItem.log.description && (
+                <div className="col-span-2">
+                  <span className="text-[10px] text-brand-dark-grey font-semibold block">Work Description</span>
+                  <p className="font-medium text-brand-dark-grey text-xs mt-0.5">{selectedMaintenanceItem.log.description}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

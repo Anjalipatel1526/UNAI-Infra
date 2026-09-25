@@ -18,7 +18,10 @@ import {
   HiOutlineEye,
   HiOutlineKey,
   HiOutlineBriefcase,
-  HiOutlineCalendarDays
+  HiOutlineCalendarDays,
+  HiOutlineEnvelope,
+  HiOutlinePhone,
+  HiOutlineChevronRight
 } from 'react-icons/hi2';
 
 export const EmployeeManagement: React.FC = () => {
@@ -261,54 +264,125 @@ export const EmployeeManagement: React.FC = () => {
       <Card>
         <CardBody className="p-0 overflow-x-auto">
           {filteredEmployees.length > 0 ? (
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-brand-light-grey border-b border-brand-border text-brand-dark-grey font-bold uppercase tracking-wider">
-                  <th className="px-6 py-4">Employee ID</th>
-                  <th className="px-6 py-4">Employee Profile</th>
-                  <th className="px-6 py-4">Portal Role</th>
-                  <th className="px-6 py-4">Department</th>
-                  <th className="px-6 py-4">Joining Date</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-brand-border">
-                {filteredEmployees.map(emp => (
-                  <tr key={emp.id} className="hover:bg-brand-light-grey/30 transition-colors">
-                    <td className="px-6 py-4 font-bold text-brand-text">{emp.employeeId}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <Avatar name={emp.name} src={emp.profilePicture} size="sm" />
-                        <div>
-                          <p className="font-bold text-brand-text">{emp.name}</p>
-                          <p className="text-[10px] text-brand-dark-grey mt-0.5">{emp.email} • {emp.phone}</p>
+            <>
+              {/* DESKTOP TABLE VIEW (hidden lg:block) */}
+              <div className="hidden lg:block">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-brand-light-grey border-b border-brand-border text-brand-dark-grey font-bold uppercase tracking-wider">
+                      <th className="px-6 py-4">Employee ID</th>
+                      <th className="px-6 py-4">Employee Profile</th>
+                      <th className="px-6 py-4">Portal Role</th>
+                      <th className="px-6 py-4">Department</th>
+                      <th className="px-6 py-4">Joining Date</th>
+                      <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-brand-border">
+                    {filteredEmployees.map(emp => (
+                      <tr key={emp.id} className="hover:bg-brand-light-grey/30 transition-colors">
+                        <td className="px-6 py-4 font-bold text-brand-text">{emp.employeeId}</td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <Avatar name={emp.name} src={emp.profilePicture} size="sm" />
+                            <div>
+                              <p className="font-bold text-brand-text">{emp.name}</p>
+                              <p className="text-[10px] text-brand-dark-grey mt-0.5">{emp.email} • {emp.phone}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <Badge variant={emp.role === 'admin' ? 'brand' : 'info'}>{emp.role}</Badge>
+                        </td>
+                        <td className="px-6 py-4 text-brand-text font-medium">{emp.department}</td>
+                        <td className="px-6 py-4 text-brand-dark-grey font-medium">{emp.joiningDate}</td>
+                        <td className="px-6 py-4">
+                          <Badge variant={emp.status === 'Active' ? 'success' : 'neutral'}>{emp.status}</Badge>
+                        </td>
+                        <td className="px-6 py-4 text-right flex justify-end gap-2 mt-1.5">
+                          <Button variant="ghost" size="sm" onClick={() => { setSelectedEmp(emp); setIsDetailModalOpen(true); }} className="p-1.5" title="View details">
+                            <HiOutlineEye className="h-4.5 w-4.5 text-brand-dark-grey" />
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleOpenEdit(emp)} className="p-1.5" title="Edit Employee">
+                            <HiOutlinePencilSquare className="h-4.5 w-4.5 text-brand-dark-grey" />
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleDeleteTrigger(emp)} className="p-1.5 text-red-600 hover:text-red-700" title="Delete Account">
+                            <HiOutlineTrash className="h-4.5 w-4.5" />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* MOBILE & TABLET VIEW: Responsive Interactive Cards (block lg:hidden) */}
+              <div className="block lg:hidden divide-y divide-brand-border">
+                {filteredEmployees.map((emp) => (
+                  <div
+                    key={emp.id}
+                    onClick={() => {
+                      setSelectedEmp(emp);
+                      setIsDetailModalOpen(true);
+                    }}
+                    className="p-4 transition-all duration-200 cursor-pointer text-left hover:bg-brand-light-grey/40 active:bg-blue-50/30"
+                  >
+                    {/* Top Bar: Employee ID Badge, Role Badge, Status, and Delete */}
+                    <div className="flex items-center justify-between gap-2 mb-2.5">
+                      <span className="font-mono font-bold text-xs bg-blue-50 text-primary px-2.5 py-1 rounded-lg border border-blue-200/60 inline-flex items-center gap-1.5">
+                        <HiOutlineBriefcase className="h-3.5 w-3.5 shrink-0" />
+                        {emp.employeeId}
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <Badge variant={emp.role === 'admin' ? 'brand' : 'info'}>{emp.role}</Badge>
+                        <Badge variant={emp.status === 'Active' ? 'success' : 'neutral'}>{emp.status}</Badge>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteTrigger(emp);
+                          }}
+                          className="p-1 rounded-md text-stone-400 hover:text-red-600 hover:bg-stone-100 transition-colors cursor-pointer"
+                          title="Delete employee"
+                        >
+                          <HiOutlineTrash className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Main Card Body */}
+                    <div className="flex items-start gap-3.5">
+                      <Avatar name={emp.name} src={emp.profilePicture} size="md" />
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-extrabold text-sm sm:text-base text-brand-text leading-snug line-clamp-1">{emp.name}</h4>
+                        <p className="text-[11px] text-brand-dark-grey font-medium mt-0.5 truncate">{emp.department}</p>
+                        <div className="space-y-0.5 mt-1 text-[11px] text-brand-dark-grey font-medium">
+                          <span className="flex items-center gap-1.5 truncate">
+                            <HiOutlineEnvelope className="h-3.5 w-3.5 text-stone-400 shrink-0" /> {emp.email}
+                          </span>
+                          <span className="flex items-center gap-1.5">
+                            <HiOutlinePhone className="h-3.5 w-3.5 text-stone-400 shrink-0" /> {emp.phone}
+                          </span>
                         </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <Badge variant={emp.role === 'admin' ? 'brand' : 'info'}>{emp.role}</Badge>
-                    </td>
-                    <td className="px-6 py-4 text-brand-text font-medium">{emp.department}</td>
-                    <td className="px-6 py-4 text-brand-dark-grey font-medium">{emp.joiningDate}</td>
-                    <td className="px-6 py-4">
-                      <Badge variant={emp.status === 'Active' ? 'success' : 'neutral'}>{emp.status}</Badge>
-                    </td>
-                    <td className="px-6 py-4 text-right flex justify-end gap-2 mt-1.5">
-                      <Button variant="ghost" size="sm" onClick={() => { setSelectedEmp(emp); setIsDetailModalOpen(true); }} className="p-1.5" title="View details">
-                        <HiOutlineEye className="h-4.5 w-4.5 text-brand-dark-grey" />
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={() => handleOpenEdit(emp)} className="p-1.5" title="Edit Employee">
-                        <HiOutlinePencilSquare className="h-4.5 w-4.5 text-brand-dark-grey" />
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={() => handleDeleteTrigger(emp)} className="p-1.5 text-red-600 hover:text-red-700" title="Delete Account">
-                        <HiOutlineTrash className="h-4.5 w-4.5" />
-                      </Button>
-                    </td>
-                  </tr>
+                    </div>
+
+                    {/* Joining date snippet & Tap prompt */}
+                    <div className="flex items-center justify-between text-[11px] text-stone-500 mt-2.5 pt-2 border-t border-brand-border/40">
+                      <span className="flex items-center gap-1 truncate font-medium">
+                        <HiOutlineCalendarDays className="h-3.5 w-3.5 text-stone-400 shrink-0" />
+                        Joined: {emp.joiningDate}
+                      </span>
+                      <span className="text-[10px] font-semibold text-primary shrink-0 flex items-center gap-0.5 hover:underline">
+                        Tap for entire details
+                        <HiOutlineChevronRight className="h-3.5 w-3.5" />
+                      </span>
+                    </div>
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+            </>
           ) : (
             <div className="p-6">
               <EmptyState title="No Employees Found" description="Try editing your search filters or add a new team member." />
@@ -419,7 +493,38 @@ export const EmployeeManagement: React.FC = () => {
       </Modal>
 
       {/* Employee Detail Modal */}
-      <Modal isOpen={isDetailModalOpen} onClose={() => setIsDetailModalOpen(false)} title="Employee Profile Details" size="md">
+      <Modal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        size="md"
+        showCloseButton={false}
+        headerActions={
+          selectedEmp && (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setIsDetailModalOpen(false);
+                  handleOpenEdit(selectedEmp);
+                }}
+                className="text-xs font-bold flex items-center gap-1.5 py-1 px-3"
+              >
+                <HiOutlinePencilSquare className="h-4 w-4 text-stone-600" />
+                Edit
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setIsDetailModalOpen(false)}
+                className="text-xs font-bold py-1 px-3"
+              >
+                Close Details
+              </Button>
+            </div>
+          )
+        }
+      >
         {selectedEmp && (
           <div className="space-y-6 text-left text-xs">
             <div className="flex items-center gap-4">
@@ -477,9 +582,6 @@ export const EmployeeManagement: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex justify-end pt-4 border-t border-brand-border">
-              <Button variant="primary" size="sm" onClick={() => setIsDetailModalOpen(false)}>Close Profile</Button>
-            </div>
           </div>
         )}
       </Modal>

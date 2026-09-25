@@ -6,17 +6,21 @@ import { Card } from './Card';
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
+  title?: React.ReactNode;
+  headerActions?: React.ReactNode;
   children: React.ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
+  showCloseButton?: boolean;
 }
 
 export const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   title,
+  headerActions,
   children,
-  size = 'md'
+  size = 'md',
+  showCloseButton = true
 }) => {
   // Lock scroll when modal is open
   useEffect(() => {
@@ -61,16 +65,28 @@ export const Modal: React.FC<ModalProps> = ({
             className={`relative w-full ${sizes[size]} z-10`}
           >
             <Card className="shadow-2xl">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-brand-border bg-brand-light-grey">
-                <h3 className="font-semibold text-base text-brand-text">
-                  {title}
-                </h3>
-                <button
-                  onClick={onClose}
-                  className="p-1 rounded-lg hover:bg-brand-border text-brand-dark-grey transition-all duration-150 focus:outline-none"
-                >
-                  <IoClose className="h-5 w-5" />
-                </button>
+              <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-brand-border bg-brand-light-grey gap-3">
+                <div className="min-w-0 flex-1">
+                  {typeof title === 'string' ? (
+                    <h3 className="font-semibold text-base text-brand-text truncate">
+                      {title}
+                    </h3>
+                  ) : (
+                    title || null
+                  )}
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  {headerActions}
+                  {showCloseButton && (
+                    <button
+                      onClick={onClose}
+                      className="p-1 rounded-lg hover:bg-brand-border text-brand-dark-grey transition-all duration-150 focus:outline-none cursor-pointer"
+                      title="Close"
+                    >
+                      <IoClose className="h-5 w-5" />
+                    </button>
+                  )}
+                </div>
               </div>
               <div className="p-6 max-h-[75vh] overflow-y-auto">
                 {children}

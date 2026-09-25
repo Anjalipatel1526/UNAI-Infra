@@ -184,19 +184,24 @@ export const AdminDashboard: React.FC = () => {
   return (
     <div className="space-y-6 pb-6 text-left">
       {/* Sub tabs for Dashboard views */}
-      <div className="flex flex-wrap gap-2 p-1 bg-white/40 border border-white/60 rounded-2xl backdrop-blur-md self-start w-fit">
-        {['Overview', 'Performance Analytics', 'Operations Staff', 'System Audit Logs'].map((tabLabel, idx) => (
+      <div className="flex items-center gap-1.5 p-1 bg-white/60 border border-stone-200/60 rounded-2xl backdrop-blur-md overflow-x-auto no-scrollbar max-w-full whitespace-nowrap">
+        {[
+          { label: 'Overview' },
+          { label: 'Analytics' },
+          { label: 'Staff' },
+          { label: 'Audit Logs' }
+        ].map((tab, idx) => (
           <button
-            key={tabLabel}
+            key={tab.label}
             onClick={() => setActiveTab(idx)}
             className={cn(
-              "px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer",
+              "px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 whitespace-nowrap",
               activeTab === idx
                 ? "bg-primary text-white shadow-md shadow-primary/10"
                 : "text-stone-600 hover:bg-white/50 hover:text-stone-900"
             )}
           >
-            {tabLabel}
+            {tab.label}
           </button>
         ))}
       </div>
@@ -400,11 +405,11 @@ export const AdminDashboard: React.FC = () => {
 
                   {/* System Load */}
                   <FrostCard delay={0.5} className="md:col-span-3 flex flex-col justify-center">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-xs font-bold text-stone-800 uppercase tracking-wider">Depot Equipment Load</h3>
-                      <div className="flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-xs font-bold text-emerald-600">All Systems Operational</span>
+                    <div className="flex items-center justify-between gap-2 mb-4">
+                      <h3 className="text-xs font-bold text-stone-800 uppercase tracking-wider truncate">Equipment Load</h3>
+                      <div className="flex items-center gap-1.5 shrink-0 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+                        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-[11px] font-bold text-emerald-600 whitespace-nowrap">Operational</span>
                       </div>
                     </div>
                     <div className="space-y-4 text-left">

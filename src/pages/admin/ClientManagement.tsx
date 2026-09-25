@@ -19,7 +19,10 @@ import {
   HiOutlineEyeSlash,
   HiOutlineEnvelope,
   HiOutlinePhone,
-  HiOutlineCreditCard
+  HiOutlineCreditCard,
+  HiOutlineBuildingOffice2,
+  HiOutlineChevronRight,
+  HiOutlineMapPin
 } from 'react-icons/hi2';
 
 export const ClientManagement: React.FC = () => {
@@ -235,61 +238,130 @@ export const ClientManagement: React.FC = () => {
       <Card>
         <CardBody className="p-0 overflow-x-auto">
           {filteredClients.length > 0 ? (
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-brand-light-grey border-b border-brand-border text-brand-dark-grey font-bold uppercase tracking-wider">
-                  <th className="px-6 py-4">Client Portfolio</th>
-                  <th className="px-6 py-4">Company Details</th>
-                  <th className="px-6 py-4">Contact Channels</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-brand-border">
-                {filteredClients.map(client => (
-                  <tr key={client.id} className="hover:bg-brand-light-grey/30 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <Avatar name={client.name} src={client.profileImage} size="sm" />
-                        <div>
-                          <p className="font-bold text-brand-text">{client.name}</p>
-                          <p className="text-[10px] text-brand-dark-grey mt-0.5">{client.city}, {client.state}</p>
+            <>
+              {/* DESKTOP TABLE VIEW (hidden lg:block) */}
+              <div className="hidden lg:block">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-brand-light-grey border-b border-brand-border text-brand-dark-grey font-bold uppercase tracking-wider">
+                      <th className="px-6 py-4">Client Portfolio</th>
+                      <th className="px-6 py-4">Company Details</th>
+                      <th className="px-6 py-4">Contact Channels</th>
+                      <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-brand-border">
+                    {filteredClients.map(client => (
+                      <tr key={client.id} className="hover:bg-brand-light-grey/30 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <Avatar name={client.name} src={client.profileImage} size="sm" />
+                            <div>
+                              <p className="font-bold text-brand-text">{client.name}</p>
+                              <p className="text-[10px] text-brand-dark-grey mt-0.5">{client.city}, {client.state}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <p className="font-semibold text-brand-text">{client.companyName}</p>
+                          <p className="text-[10px] text-brand-dark-grey mt-0.5">PIN: {client.pincode}</p>
+                        </td>
+
+                        <td className="px-6 py-4">
+                          <div className="space-y-0.5">
+                            <span className="flex items-center gap-1.5 text-brand-dark-grey font-medium">
+                              <HiOutlineEnvelope className="h-3.5 w-3.5" /> {client.email}
+                            </span>
+                            <span className="flex items-center gap-1.5 text-brand-dark-grey font-medium">
+                              <HiOutlinePhone className="h-3.5 w-3.5" /> {client.phone}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <Badge variant={client.status === 'Active' ? 'success' : 'neutral'}>{client.status}</Badge>
+                        </td>
+                        <td className="px-6 py-4 text-right flex justify-end gap-2 mt-1.5">
+                          <Button variant="ghost" size="sm" onClick={() => { setSelectedClient(client); setIsDetailModalOpen(true); }} className="p-1.5" title="View Profile">
+                            <HiOutlineEye className="h-4.5 w-4.5 text-brand-dark-grey" />
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleOpenEdit(client)} className="p-1.5" title="Edit Profile">
+                            <HiOutlinePencilSquare className="h-4.5 w-4.5 text-brand-dark-grey" />
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleDeleteTrigger(client)} className="p-1.5 text-red-600 hover:text-red-700" title="Delete Profile">
+                            <HiOutlineTrash className="h-4.5 w-4.5" />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* MOBILE & TABLET VIEW: Responsive Interactive Cards (block lg:hidden) */}
+              <div className="block lg:hidden divide-y divide-brand-border">
+                {filteredClients.map((client) => (
+                  <div
+                    key={client.id}
+                    onClick={() => {
+                      setSelectedClient(client);
+                      setIsDetailModalOpen(true);
+                    }}
+                    className="p-4 transition-all duration-200 cursor-pointer text-left hover:bg-brand-light-grey/40 active:bg-blue-50/30"
+                  >
+                    {/* Top Bar: Company Name Badge, Status, and Delete */}
+                    <div className="flex items-center justify-between gap-2 mb-2.5">
+                      <span className="font-mono font-bold text-xs bg-blue-50 text-primary px-2.5 py-1 rounded-lg border border-blue-200/60 inline-flex items-center gap-1.5 truncate max-w-[220px]">
+                        <HiOutlineBuildingOffice2 className="h-3.5 w-3.5 shrink-0" />
+                        <span className="truncate">{client.companyName}</span>
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={client.status === 'Active' ? 'success' : 'neutral'}>{client.status}</Badge>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteTrigger(client);
+                          }}
+                          className="p-1 rounded-md text-stone-400 hover:text-red-600 hover:bg-stone-100 transition-colors cursor-pointer"
+                          title="Delete client"
+                        >
+                          <HiOutlineTrash className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Main Card Body */}
+                    <div className="flex items-start gap-3.5">
+                      <Avatar name={client.name} src={client.profileImage} size="md" />
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-extrabold text-sm sm:text-base text-brand-text leading-snug line-clamp-1">{client.name}</h4>
+                        <div className="space-y-0.5 mt-1 text-[11px] text-brand-dark-grey font-medium">
+                          <span className="flex items-center gap-1.5 truncate">
+                            <HiOutlineEnvelope className="h-3.5 w-3.5 text-stone-400 shrink-0" /> {client.email}
+                          </span>
+                          <span className="flex items-center gap-1.5">
+                            <HiOutlinePhone className="h-3.5 w-3.5 text-stone-400 shrink-0" /> {client.phone}
+                          </span>
                         </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <p className="font-semibold text-brand-text">{client.companyName}</p>
-                      <p className="text-[10px] text-brand-dark-grey mt-0.5">PIN: {client.pincode}</p>
-                    </td>
+                    </div>
 
-                    <td className="px-6 py-4">
-                      <div className="space-y-0.5">
-                        <span className="flex items-center gap-1.5 text-brand-dark-grey font-medium">
-                          <HiOutlineEnvelope className="h-3.5 w-3.5" /> {client.email}
-                        </span>
-                        <span className="flex items-center gap-1.5 text-brand-dark-grey font-medium">
-                          <HiOutlinePhone className="h-3.5 w-3.5" /> {client.phone}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <Badge variant={client.status === 'Active' ? 'success' : 'neutral'}>{client.status}</Badge>
-                    </td>
-                    <td className="px-6 py-4 text-right flex justify-end gap-2 mt-1.5">
-                      <Button variant="ghost" size="sm" onClick={() => { setSelectedClient(client); setIsDetailModalOpen(true); }} className="p-1.5" title="View Profile">
-                        <HiOutlineEye className="h-4.5 w-4.5 text-brand-dark-grey" />
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={() => handleOpenEdit(client)} className="p-1.5" title="Edit Profile">
-                        <HiOutlinePencilSquare className="h-4.5 w-4.5 text-brand-dark-grey" />
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={() => handleDeleteTrigger(client)} className="p-1.5 text-red-600 hover:text-red-700" title="Delete Profile">
-                        <HiOutlineTrash className="h-4.5 w-4.5" />
-                      </Button>
-                    </td>
-                  </tr>
+                    {/* Location snippet & Tap prompt */}
+                    <div className="flex items-center justify-between text-[11px] text-stone-500 mt-2.5 pt-2 border-t border-brand-border/40">
+                      <span className="flex items-center gap-1 truncate font-medium">
+                        <HiOutlineMapPin className="h-3.5 w-3.5 text-stone-400 shrink-0" />
+                        {client.city}, {client.state}
+                      </span>
+                      <span className="text-[10px] font-semibold text-primary shrink-0 flex items-center gap-0.5 hover:underline">
+                        Tap for entire details
+                        <HiOutlineChevronRight className="h-3.5 w-3.5" />
+                      </span>
+                    </div>
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+            </>
           ) : (
             <div className="p-6">
               <EmptyState title="No Clients Registered" description="There are no clients matching the search filter criteria." />
@@ -431,7 +503,38 @@ export const ClientManagement: React.FC = () => {
       </Modal>
 
       {/* Client Detail Modal */}
-      <Modal isOpen={isDetailModalOpen} onClose={() => setIsDetailModalOpen(false)} title="Client Profile Details" size="xl">
+      <Modal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        size="xl"
+        showCloseButton={false}
+        headerActions={
+          selectedClient && (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setIsDetailModalOpen(false);
+                  handleOpenEdit(selectedClient);
+                }}
+                className="text-xs font-bold flex items-center gap-1.5 py-1 px-3"
+              >
+                <HiOutlinePencilSquare className="h-4 w-4 text-stone-600" />
+                Edit
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setIsDetailModalOpen(false)}
+                className="text-xs font-bold py-1 px-3"
+              >
+                Close Details
+              </Button>
+            </div>
+          )
+        }
+      >
         {selectedClient && (
           <div className="space-y-6 text-left text-xs">
             {/* Header info */}
@@ -525,9 +628,6 @@ export const ClientManagement: React.FC = () => {
 
 
 
-            <div className="flex justify-end pt-4 border-t border-brand-border">
-              <Button variant="primary" size="sm" onClick={() => setIsDetailModalOpen(false)}>Close Portfolio</Button>
-            </div>
           </div>
         )}
       </Modal>

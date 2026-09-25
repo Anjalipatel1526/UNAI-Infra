@@ -16,8 +16,7 @@ import {
   HiOutlineTrash,
   HiOutlineEye,
   HiOutlineQrCode,
-  HiOutlineWrench,
-  HiOutlineChevronDown,
+  HiOutlineChevronRight,
   HiOutlineMapPin,
   HiOutlineSquare3Stack3D
 } from 'react-icons/hi2';
@@ -37,7 +36,6 @@ export const InventoryManagement: React.FC = () => {
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [previewFullscreenImage, setPreviewFullscreenImage] = useState<string | null>(null);
-  const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
 
   // Form States
   const [formName, setFormName] = useState('');
@@ -381,181 +379,80 @@ export const InventoryManagement: React.FC = () => {
 
           {/* MOBILE & TABLET VIEW: Responsive Interactive Cards (block lg:hidden) */}
           <div className="block lg:hidden divide-y divide-brand-border">
-            {filteredInventory.map((item) => {
-              const isExpanded = expandedItemId === item.id;
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => setExpandedItemId(isExpanded ? null : item.id)}
-                  className={`p-4 transition-all duration-200 cursor-pointer text-left ${
-                    isExpanded ? 'bg-blue-50/20' : 'hover:bg-brand-light-grey/40'
-                  }`}
-                >
-                  {/* Top Bar: Equipment ID and Status */}
-                  <div className="flex items-center justify-between gap-2 mb-2.5">
-                    <span className="font-mono font-bold text-xs bg-blue-50 text-primary px-2.5 py-1 rounded-lg border border-blue-200/60 inline-flex items-center gap-1.5">
-                      <HiOutlineSquare3Stack3D className="h-3.5 w-3.5" />
-                      {item.equipmentId}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      {getStatusBadge(item.status)}
-                      <div className={`p-1 rounded-full text-stone-400 transition-transform duration-200 ${isExpanded ? 'rotate-180 text-primary bg-blue-50' : 'bg-stone-100'}`}>
-                        <HiOutlineChevronDown className="h-3.5 w-3.5" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Main Card Body */}
-                  <div className="flex items-start gap-3.5">
-                    {item.images[0] ? (
-                      <img
-                        src={item.images[0]}
-                        alt={item.name}
-                        className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl object-cover border border-brand-border shrink-0 shadow-xs"
-                      />
-                    ) : (
-                      <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl border border-dashed border-brand-border bg-brand-light-grey flex items-center justify-center shrink-0">
-                        <svg className="w-6 h-6 text-brand-dark-grey opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                      </div>
+            {filteredInventory.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => handleOpenDetail(item)}
+                className="p-4 transition-all duration-200 cursor-pointer text-left hover:bg-brand-light-grey/40 active:bg-blue-50/30"
+              >
+                {/* Top Bar: Equipment ID, Status, and Delete */}
+                <div className="flex items-center justify-between gap-2 mb-2.5">
+                  <span className="font-mono font-bold text-xs bg-blue-50 text-primary px-2.5 py-1 rounded-lg border border-blue-200/60 inline-flex items-center gap-1.5">
+                    <HiOutlineSquare3Stack3D className="h-3.5 w-3.5" />
+                    {item.equipmentId}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {getStatusBadge(item.status)}
+                    {role !== 'client' && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteTrigger(item);
+                        }}
+                        className="p-1 rounded-md text-stone-400 hover:text-red-600 hover:bg-stone-100 transition-colors cursor-pointer"
+                        title="Delete item"
+                      >
+                        <HiOutlineTrash className="h-4 w-4" />
+                      </button>
                     )}
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-extrabold text-sm sm:text-base text-brand-text leading-snug line-clamp-1">{item.name}</h4>
-                      <p className="text-[11px] text-brand-dark-grey font-medium mt-0.5 truncate">{item.brand} • {item.model}</p>
-                      <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                        <span className="text-[10px] bg-brand-light-grey text-brand-dark-grey font-semibold px-2 py-0.5 rounded-md border border-brand-border/60">
-                          {item.category}
-                        </span>
-                        {role !== 'client' && (
-                          <span className="text-xs font-extrabold text-primary">
-                            ₹{item.rentalPriceDay.toLocaleString('en-IN')}<span className="text-[10px] font-normal text-stone-400">/day</span>
-                          </span>
-                        )}
-                      </div>
-                    </div>
                   </div>
+                </div>
 
-                  {/* Location snippet & Tap prompt */}
-                  <div className="flex items-center justify-between text-[11px] text-stone-500 mt-2.5 pt-2 border-t border-brand-border/40">
-                    <span className="flex items-center gap-1 truncate font-medium">
-                      <HiOutlineMapPin className="h-3.5 w-3.5 text-stone-400 shrink-0" />
-                      {item.currentLocation || 'Location Unspecified'}
-                    </span>
-                    <span className="text-[10px] font-semibold text-primary shrink-0">
-                      {isExpanded ? 'Tap to collapse' : 'Tap for entire details'}
-                    </span>
-                  </div>
-
-                  {/* EXPANDED ENTIRE DETAILS CARD (Revealed when card is clicked) */}
-                  {isExpanded && (
-                    <div 
-                      className="mt-3.5 pt-3.5 border-t border-brand-border/80 space-y-3.5 text-left text-xs bg-white p-3.5 rounded-xl border border-blue-100 shadow-sm"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {/* Rates Matrix */}
-                      {role !== 'client' && (
-                        <div>
-                          <span className="text-[10px] uppercase font-bold text-stone-400 block mb-1.5">Rental Pricing Matrix</span>
-                          <div className="grid grid-cols-3 gap-2 bg-stone-50 p-2.5 rounded-xl border border-stone-200/60 text-center">
-                            <div>
-                              <span className="text-[9px] uppercase font-bold text-stone-400 block">Daily</span>
-                              <span className="font-extrabold text-primary text-xs">₹{item.rentalPriceDay.toLocaleString('en-IN')}</span>
-                            </div>
-                            <div>
-                              <span className="text-[9px] uppercase font-bold text-stone-400 block">Weekly</span>
-                              <span className="font-bold text-stone-700 text-xs">₹{item.rentalPriceWeek.toLocaleString('en-IN')}</span>
-                            </div>
-                            <div>
-                              <span className="text-[9px] uppercase font-bold text-stone-400 block">Monthly</span>
-                              <span className="font-bold text-stone-700 text-xs">₹{item.rentalPriceMonth.toLocaleString('en-IN')}</span>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Complete Asset Specs Grid */}
-                      <div className="grid grid-cols-2 gap-2 text-[11px]">
-                        <div className="bg-stone-50 p-2.5 rounded-xl border border-stone-200/60">
-                          <span className="text-[10px] text-stone-400 font-semibold block">Serial Number</span>
-                          <span className="font-mono font-bold text-stone-800 break-all">{item.serialNumber || 'N/A'}</span>
-                        </div>
-                        <div className="bg-stone-50 p-2.5 rounded-xl border border-stone-200/60">
-                          <span className="text-[10px] text-stone-400 font-semibold block">Security Deposit</span>
-                          <span className="font-bold text-stone-800">₹{(item.securityDeposit || 0).toLocaleString('en-IN')}</span>
-                        </div>
-                        <div className="bg-stone-50 p-2.5 rounded-xl border border-stone-200/60">
-                          <span className="text-[10px] text-stone-400 font-semibold block">Purchase Date</span>
-                          <span className="font-medium text-stone-800">{item.purchaseDate || 'N/A'}</span>
-                        </div>
-                        <div className="bg-stone-50 p-2.5 rounded-xl border border-stone-200/60">
-                          <span className="text-[10px] text-stone-400 font-semibold block">Asset Value</span>
-                          <span className="font-bold text-stone-800">₹{(item.purchasePrice || 0).toLocaleString('en-IN')}</span>
-                        </div>
-                      </div>
-
-                      {/* Technical Specifications list */}
-                      {item.specifications && item.specifications.length > 0 && (
-                        <div>
-                          <span className="text-[10px] uppercase font-bold text-stone-400 block mb-1">Technical Specifications</span>
-                          <div className="space-y-1 bg-stone-50 p-2.5 rounded-xl border border-stone-200/60">
-                            {item.specifications.map((spec, sIdx) => (
-                              <div key={sIdx} className="flex justify-between text-[11px]">
-                                <span className="text-stone-500 font-medium">{spec.label}:</span>
-                                <span className="font-bold text-stone-800">{spec.value}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Description if present */}
-                      {item.description && (
-                        <div className="bg-stone-50 p-2.5 rounded-xl border border-stone-200/60 text-[11px]">
-                          <span className="text-[10px] text-stone-400 font-semibold block mb-0.5">Asset Description</span>
-                          <p className="text-stone-700 leading-relaxed">{item.description}</p>
-                        </div>
-                      )}
-
-                      {/* Action Buttons */}
-                      <div className="flex items-center gap-2 pt-1 border-t border-stone-200/50">
-                        <Button 
-                          variant="primary" 
-                          size="sm" 
-                          className="flex-1 justify-center text-xs" 
-                          onClick={() => handleOpenDetail(item)}
-                        >
-                          <HiOutlineEye className="h-4 w-4 mr-1.5" />
-                          View Full Sheet
-                        </Button>
-                        {role !== 'client' && (
-                          <>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="flex-1 justify-center text-xs" 
-                              onClick={() => handleOpenEdit(item)}
-                            >
-                              <HiOutlinePencilSquare className="h-4 w-4 mr-1.5 text-stone-600" />
-                              Edit
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="text-red-600 hover:bg-red-50 p-2" 
-                              title="Delete item"
-                              onClick={() => handleDeleteTrigger(item)}
-                            >
-                              <HiOutlineTrash className="h-4 w-4" />
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                {/* Main Card Body */}
+                <div className="flex items-start gap-3.5">
+                  {item.images[0] ? (
+                    <img
+                      src={item.images[0]}
+                      alt={item.name}
+                      className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl object-cover border border-brand-border shrink-0 shadow-xs"
+                    />
+                  ) : (
+                    <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl border border-dashed border-brand-border bg-brand-light-grey flex items-center justify-center shrink-0">
+                      <svg className="w-6 h-6 text-brand-dark-grey opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
                     </div>
                   )}
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-extrabold text-sm sm:text-base text-brand-text leading-snug line-clamp-1">{item.name}</h4>
+                    <p className="text-[11px] text-brand-dark-grey font-medium mt-0.5 truncate">{item.brand} • {item.model}</p>
+                    <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                      <span className="text-[10px] bg-brand-light-grey text-brand-dark-grey font-semibold px-2 py-0.5 rounded-md border border-brand-border/60">
+                        {item.category}
+                      </span>
+                      {role !== 'client' && (
+                        <span className="text-xs font-extrabold text-primary">
+                          ₹{item.rentalPriceDay.toLocaleString('en-IN')}<span className="text-[10px] font-normal text-stone-400">/day</span>
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              );
-            })}
+
+                {/* Location snippet & Tap prompt */}
+                <div className="flex items-center justify-between text-[11px] text-stone-500 mt-2.5 pt-2 border-t border-brand-border/40">
+                  <span className="flex items-center gap-1 truncate font-medium">
+                    <HiOutlineMapPin className="h-3.5 w-3.5 text-stone-400 shrink-0" />
+                    {item.currentLocation || 'Location Unspecified'}
+                  </span>
+                  <span className="text-[10px] font-semibold text-primary shrink-0 flex items-center gap-0.5 hover:underline">
+                    Tap for entire details
+                    <HiOutlineChevronRight className="h-3.5 w-3.5" />
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </>
       ) : (
@@ -755,7 +652,40 @@ export const InventoryManagement: React.FC = () => {
       </Modal>
 
       {/* Equipment Detail Modal */}
-      <Modal isOpen={isDetailModalOpen} onClose={() => setIsDetailModalOpen(false)} title="Equipment Specifications & History" size="lg">
+      <Modal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        size="lg"
+        showCloseButton={false}
+        headerActions={
+          selectedItem && (
+            <div className="flex items-center gap-2">
+              {role !== 'client' && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setIsDetailModalOpen(false);
+                    handleOpenEdit(selectedItem);
+                  }}
+                  className="text-xs font-bold flex items-center gap-1.5 py-1 px-3"
+                >
+                  <HiOutlinePencilSquare className="h-4 w-4 text-stone-600" />
+                  Edit
+                </Button>
+              )}
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setIsDetailModalOpen(false)}
+                className="text-xs font-bold py-1 px-3"
+              >
+                Close Details
+              </Button>
+            </div>
+          )
+        }
+      >
         {selectedItem && (
           <div className="space-y-6 text-left text-xs">
             {/* Header Details */}
@@ -842,63 +772,6 @@ export const InventoryManagement: React.FC = () => {
                   ||||| | ||||| | || || {selectedItem.serialNumber}
                 </div>
               </div>
-            </div>
-
-            {/* Tabs for Maintenance & Rental History */}
-            <div className="space-y-4">
-              {/* Maintenance history */}
-              <div>
-                <h4 className="font-bold text-xs text-brand-text border-b border-brand-border pb-1.5 mb-2.5 uppercase tracking-wider flex items-center gap-1.5">
-                  <HiOutlineWrench className="h-4 w-4 text-brand-dark-grey" /> Maintenance Logs
-                </h4>
-                {selectedItem.maintenanceHistory.length > 0 ? (
-                  <div className="space-y-2 max-h-40 overflow-y-auto">
-                    {selectedItem.maintenanceHistory.map(log => (
-                      <div key={log.id} className="p-2.5 bg-brand-light-grey rounded-lg border border-brand-border flex justify-between items-start">
-                        <div>
-                          <p className="font-bold text-brand-text">{log.type}</p>
-                          <p className="text-[10px] text-brand-dark-grey mt-0.5">{log.description} • Tech: {log.technician}</p>
-                        </div>
-                        <div className="text-right shrink-0">
-                          <span className="font-bold text-primary block">₹{log.cost.toLocaleString('en-IN')}</span>
-                          <span className="text-[10px] text-brand-dark-grey block mt-0.5">{log.date}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-xs text-brand-dark-grey italic">No maintenance history recorded for this unit.</p>
-                )}
-              </div>
-
-              {/* Rental History */}
-              <div>
-                <h4 className="font-bold text-xs text-brand-text border-b border-brand-border pb-1.5 mb-2.5 uppercase tracking-wider flex items-center gap-1.5">
-                  Rental Transactions
-                </h4>
-                {selectedItem.rentalHistory.length > 0 ? (
-                  <div className="space-y-2 max-h-40 overflow-y-auto">
-                    {selectedItem.rentalHistory.map(rent => (
-                      <div key={rent.id} className="p-2.5 bg-brand-light-grey rounded-lg border border-brand-border flex justify-between items-center">
-                        <div>
-                          <p className="font-bold text-brand-text">{rent.clientName}</p>
-                          <p className="text-[10px] text-brand-dark-grey mt-0.5">Rental No: {rent.rentalNumber}</p>
-                        </div>
-                        <div className="text-right shrink-0">
-                          <span className="font-bold text-brand-text block">{rent.startDate} to {rent.endDate}</span>
-                          <Badge variant={rent.status === 'Completed' ? 'success' : 'brand'} className="mt-0.5 text-[9px]">{rent.status}</Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-xs text-brand-dark-grey italic">No rental transactions recorded for this asset.</p>
-                )}
-              </div>
-            </div>
-
-            <div className="flex justify-end pt-4 border-t border-brand-border">
-              <Button variant="primary" size="sm" onClick={() => setIsDetailModalOpen(false)}>Close Details</Button>
             </div>
           </div>
         )}
