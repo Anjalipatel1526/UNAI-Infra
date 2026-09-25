@@ -348,9 +348,6 @@ export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({ chil
               </button>
               
               <div className="text-left">
-                <span className="text-[10px] font-bold text-stone-400 tracking-wider uppercase">
-                  UNAI Infra CRM
-                </span>
                 <h2 className="text-sm font-extrabold text-stone-850 m-0 leading-tight capitalize">
                   {location.pathname.split('/').slice(-1)[0].replace('-', ' ')} Portal
                 </h2>

@@ -26,10 +26,11 @@ export const AvailabilityTool: React.FC = () => {
   const [hasSearched, setHasSearched] = useState(false);
 
   const categories = [
-    'Excavators', 'Concrete Mixers', 'Scaffolding', 'Compactors', 
-    'Drilling Machines', 'Cutting Machines', 'Generators', 
-    'Road Rollers', 'Water Pumps', 'Power Tools', 'Construction Machinery', 
-    'Safety Equipment', 'Electrical Tools', 'Hand Tools'
+    'Cement', 'Sand', 'Aggregates & Gravel', 'Steel & TMT Bars',
+    'Ready-Mix Concrete (RMC)', 'Bricks & Blocks', 'Bitumen & Asphalt',
+    'Pipes & Drainage', 'Precast Concrete', 'Construction Chemicals',
+    'Geotextiles & Road Fabrics', 'Electrical & Conduits',
+    'Safety Barriers & Signage', 'Formwork & Scaffolding Planks'
   ];
 
   const handleCheckAvailability = (e: React.FormEvent) => {

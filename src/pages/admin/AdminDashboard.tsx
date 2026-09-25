@@ -20,7 +20,6 @@ import {
   MoreVertical,
   CheckCircle2,
   Clock,
-  Zap,
   ArrowUpRight
 } from 'lucide-react';
 
@@ -242,10 +241,7 @@ export const AdminDashboard: React.FC = () => {
 
                 {/* Quick Stat: Revenue */}
                 <FrostCard delay={0.1} className="flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <div className="p-3 bg-blue-50 rounded-2xl text-primary border border-blue-200/50">
-                      <Zap className="h-6 w-6" />
-                    </div>
+                  <div className="flex justify-end items-start mb-2">
                     <div className="relative">
                       <button 
                         onClick={() => setActiveMenuId(activeMenuId === 'revenue' ? null : 'revenue')}
@@ -561,10 +557,10 @@ export const AdminDashboard: React.FC = () => {
                   </div>
                   <div className="flex-1 flex flex-col justify-center gap-5">
                     {[
-                      { source: 'Heavy Machinery (Excavators & Rollers)', percent: Math.round(((inventory.filter(i => i.category === 'Excavators' || i.category === 'Road Rollers').length) / (totalInvCount || 1)) * 100), color: 'bg-primary' },
-                      { source: 'Concrete & Mixing Plants', percent: Math.round(((inventory.filter(i => i.category === 'Concrete Mixers').length) / (totalInvCount || 1)) * 100), color: 'bg-amber-500' },
-                      { source: 'Power Generators', percent: Math.round(((inventory.filter(i => i.category === 'Generators').length) / (totalInvCount || 1)) * 100), color: 'bg-yellow-500' },
-                      { source: 'Power Tools & Concrete Cutters', percent: Math.round(((inventory.filter(i => i.category === 'Power Tools' || i.category === 'Cutting Machines' || i.category === 'Drilling Machines').length) / (totalInvCount || 1)) * 100), color: 'bg-emerald-500' }
+                      { source: 'Cement & Concrete Products', percent: Math.round(((inventory.filter(i => i.category === 'Cement' || i.category === 'Ready-Mix Concrete (RMC)' || i.category === 'Precast Concrete').length) / (totalInvCount || 1)) * 100), color: 'bg-primary' },
+                      { source: 'Sand, Aggregates & Gravel', percent: Math.round(((inventory.filter(i => i.category === 'Sand' || i.category === 'Aggregates & Gravel').length) / (totalInvCount || 1)) * 100), color: 'bg-indigo-500' },
+                      { source: 'Steel & TMT Reinforcements', percent: Math.round(((inventory.filter(i => i.category === 'Steel & TMT Bars').length) / (totalInvCount || 1)) * 100), color: 'bg-blue-600' },
+                      { source: 'Pipes, Drainage & Bitumen', percent: Math.round(((inventory.filter(i => i.category === 'Pipes & Drainage' || i.category === 'Bitumen & Asphalt' || i.category === 'Bricks & Blocks').length) / (totalInvCount || 1)) * 100), color: 'bg-emerald-500' }
                     ].map((s, i) => (
                       <div key={i} className="space-y-1.5">
                         <div className="flex justify-between text-xs font-bold text-stone-700">
